@@ -153,11 +153,20 @@
   <ItemGroup>
     <ClCompile Include="first_app.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="vex_pipeline.cpp" />
     <ClCompile Include="vex_window.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="first_app.h" />
+    <ClInclude Include="vex_pipeline.h" />
     <ClInclude Include="vex_window.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="compile.bat" />
+    <None Include="frag.spv" />
+    <None Include="simple_shader.frag" />
+    <None Include="simple_shader.vert" />
+    <None Include="vert.spv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
