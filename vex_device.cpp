@@ -72,7 +72,7 @@ namespace vex {
 		if (enableValidationLayers && !checkValidationLayerSupport()) {
 			throw std::runtime_error("validation layers requested, but not available!");
 		}
-		// Looks like the application is breaking here. Sying Vk is unscoped
+		// Looks like the application is breaking here. Saying Vk is unscoped. Strange because this runs in release and not not debug mode????
 		VkApplicationInfo appInfo = {};
 		appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
 		appInfo.pApplicationName = "VexEngine App";

@@ -10,13 +10,12 @@ namespace vex {
 		VexWindow(int w, int h, std::string name);
 		~VexWindow();
 
-		/* This is breaking the code somehow??*/
+		// Window Destructors
 		VexWindow(const VexWindow&) = delete;
 		VexWindow& operator = (const VexWindow&) = delete;
 
-		bool shouldClose() {
-			return glfwWindowShouldClose(window);
-		}
+		bool shouldClose() { return glfwWindowShouldClose(window); }
+		VkExtent2D getExtent() { return { static_cast<uint32_t>(width), static_cast<uint32_t>(height) }; }
 
 		void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 

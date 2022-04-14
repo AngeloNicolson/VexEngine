@@ -33,6 +33,9 @@
     <ClCompile Include="vex_pipeline.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="vex_swap_chain.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vex_device.h">
@@ -45,6 +48,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vex_window.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vex_swap_chain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

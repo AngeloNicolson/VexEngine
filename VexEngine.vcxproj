@@ -164,11 +164,13 @@
     <ClCompile Include="vex_device.cpp" />
     <ClCompile Include="vex_pipeline.cpp" />
     <ClCompile Include="vex_window.cpp" />
+    <ClCompile Include="vex_swap_chain.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="first_app.h" />
     <ClInclude Include="vex_device.h" />
     <ClInclude Include="vex_pipeline.h" />
+    <ClInclude Include="vex_swap_chain.h" />
     <ClInclude Include="vex_window.h" />
   </ItemGroup>
   <ItemGroup>
