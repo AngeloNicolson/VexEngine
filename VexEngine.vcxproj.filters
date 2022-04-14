@@ -18,28 +18,34 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="vex_window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="first_app.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="vex_window.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="vex_device.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
     <ClCompile Include="vex_pipeline.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Resource Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="vex_window.h">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="vex_device.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="first_app.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vex_pipeline.h">
-      <Filter>Source Files</Filter>
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vex_window.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -49,14 +55,14 @@
     <None Include="simple_shader.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="compile.bat">
-      <Filter>Source Files</Filter>
-    </None>
     <None Include="frag.spv">
       <Filter>shaders</Filter>
     </None>
     <None Include="vert.spv">
       <Filter>shaders</Filter>
+    </None>
+    <None Include="compile.bat">
+      <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
 </Project>

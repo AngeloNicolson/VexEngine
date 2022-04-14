@@ -2,6 +2,7 @@
 
 #include "vex_window.h"
 #include "vex_pipeline.h"
+#include "vex_device.h"
 
 namespace vex {
 	class FirstApp {
@@ -12,7 +13,11 @@ namespace vex {
 		void run();
 	private:
 		VexWindow vexWindow{ WIDTH, HEIGHT, "VEXOID" };
-		// For some reason i cant point the files to the shaders folder
-		VexPipeline vexPipeline{ "vert.spv", "frag.spv" };
+		VexDevice vexDevice{ vexWindow };
+		VexPipeline vexPipeline{
+			vexDevice,
+			"vert.spv",
+			"frag.spv",
+		VexPipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT) };
 	};
 }
