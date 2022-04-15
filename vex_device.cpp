@@ -405,7 +405,7 @@ namespace vex {
 
 		throw std::runtime_error("failed to find suitable memory type!");
 	}
-
+	// Will need to re write this when I introduce a memory allocator.
 	void VexDevice::createBuffer(
 		VkDeviceSize size,
 		VkBufferUsageFlags usage,

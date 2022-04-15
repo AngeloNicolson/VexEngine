@@ -33,7 +33,7 @@ namespace vex {
 
 		// Not copyable or movable
 		VexDevice(const VexDevice&) = delete;
-		void operator=(const VexDevice&) = delete;
+		VexDevice& operator=(const VexDevice&) = delete;
 		VexDevice(VexDevice&&) = delete;
 		VexDevice& operator=(VexDevice&&) = delete;
 

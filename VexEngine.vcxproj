@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\GLM\glm\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -107,7 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\GLM\glm\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -126,7 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\GLM\glm\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -145,7 +145,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\GLM\glm\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -162,6 +162,7 @@
     <ClCompile Include="first_app.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="vex_device.cpp" />
+    <ClCompile Include="vex_model.cpp" />
     <ClCompile Include="vex_pipeline.cpp" />
     <ClCompile Include="vex_window.cpp" />
     <ClCompile Include="vex_swap_chain.cpp" />
@@ -169,16 +170,17 @@
   <ItemGroup>
     <ClInclude Include="first_app.h" />
     <ClInclude Include="vex_device.h" />
+    <ClInclude Include="vex_model.h" />
     <ClInclude Include="vex_pipeline.h" />
     <ClInclude Include="vex_swap_chain.h" />
     <ClInclude Include="vex_window.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="compile.bat" />
-    <None Include="frag.spv" />
     <None Include="simple_shader.frag" />
+    <None Include="simple_shader.frag.spv" />
     <None Include="simple_shader.vert" />
-    <None Include="vert.spv" />
+    <None Include="simple_shader.vert.spv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

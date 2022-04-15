@@ -18,7 +18,7 @@ namespace vex {
 		~VexSwapChain();
 
 		VexSwapChain(const VexSwapChain&) = delete;
-		void operator=(const VexSwapChain&) = delete;
+		VexSwapChain& operator=(const VexSwapChain&) = delete;
 
 		VkFramebuffer getFrameBuffer(int index) { return swapChainFramebuffers[index]; }
 		VkRenderPass getRenderPass() { return renderPass; }

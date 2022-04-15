@@ -36,6 +36,9 @@
     <ClCompile Include="vex_swap_chain.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="vex_model.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vex_device.h">
@@ -53,6 +56,9 @@
     <ClInclude Include="vex_swap_chain.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vex_model.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="simple_shader.vert">
@@ -61,14 +67,14 @@
     <None Include="simple_shader.frag">
       <Filter>shaders</Filter>
     </None>
-    <None Include="frag.spv">
+    <None Include="simple_shader.frag.spv">
       <Filter>shaders</Filter>
     </None>
-    <None Include="vert.spv">
+    <None Include="simple_shader.vert.spv">
       <Filter>shaders</Filter>
     </None>
     <None Include="compile.bat">
-      <Filter>Resource Files</Filter>
+      <Filter>shaders</Filter>
     </None>
   </ItemGroup>
 </Project>
