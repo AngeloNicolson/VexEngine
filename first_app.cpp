@@ -1,151 +1,53 @@
 #include "first_app.h"
-
+#include "simple_render_system.h"
+//libs
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
+//std
 #include <stdexcept>
 #include <array>
+#include <cassert>
 
 namespace vex {
 	FirstApp::FirstApp() {
-		loadModels();
-		createPipelineLayout();
-		recreateSwapChain();
-		createCommandBuffers();
+		loadGameObjects();
 	}
 
-	FirstApp::~FirstApp() {
-		vkDestroyPipelineLayout(vexDevice.device(), pipelineLayout, nullptr);
-	}
+	FirstApp::~FirstApp() {}
 
 	void FirstApp::run() {
+		SimpleRenderSystem simpleRenderSystem{ vexDevice, vexRenderer.getSwapChainRenderPass() };
 		while (!vexWindow.shouldClose()) {
 			glfwPollEvents();
-			drawFrame();
+
+			if (auto commandBuffer = vexRenderer.beginFrame()) {
+				vexRenderer.beginSwapChainRenderPass(commandBuffer);
+				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects);
+				vexRenderer.endSwapChainRenderPass(commandBuffer);
+				vexRenderer.endFrame();
+			}
 		}
 
 		vkDeviceWaitIdle(vexDevice.device());
 	}
 
-	void FirstApp::loadModels() {
+	void FirstApp::loadGameObjects() {
 		std::vector<VexModel::Vertex> vertices{
-			{{0.0f, -0.5f }, {1.0f, 0.0f, 0.0f}},
-			{ {0.5f, 0.5f }, {0.0f, 1.0f, 0.0f}},
-			{ {-0.5f, 0.5f }, {0.0f, 0.0f, 1.0f}}
+			{{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+			{{0.5f, 0.5f }, {0.0f, 1.0f, 0.0f}},
+			{{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}
 		};
-		vexModel = std::make_unique<VexModel>(vexDevice, vertices);
-	}
-	void FirstApp::createPipelineLayout() {
-		VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-		pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-		pipelineLayoutInfo.setLayoutCount = 0;
-		pipelineLayoutInfo.pSetLayouts = nullptr;
-		pipelineLayoutInfo.pushConstantRangeCount = 0;
-		pipelineLayoutInfo.pPushConstantRanges = nullptr;
-		if (vkCreatePipelineLayout(vexDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
-			throw std::runtime_error("failed to create pipeline layout");
-		}
-	}
+		auto vexModel = std::make_shared<VexModel>(vexDevice, vertices);
 
-	void FirstApp::createPipeline() {
-		PipelineConfigInfo pipelineConfig{};
-		VexPipeline::defaultPipelineConfigInfo(pipelineConfig);
-		pipelineConfig.renderPass = vexSwapChain->getRenderPass();
-		pipelineConfig.pipelineLayout = pipelineLayout;
-		vexPipeline = std::make_unique<VexPipeline>(vexDevice, "simple_shader.vert.spv", "simple_shader.frag.spv", pipelineConfig);
-	}
+		auto triangle = VexGameObject::createGameObject();
+		triangle.model = vexModel;
+		triangle.color = { .1f, .0f, .1f };
+		triangle.transform2d.translation.x = .2f;
+		triangle.transform2d.scale = { 2.f, .5f };
+		triangle.transform2d.rotation = .25f * glm::two_pi<float>();
 
-	void FirstApp::recreateSwapChain() {
-		auto extent = vexWindow.getExtent();
-		while (extent.width == 0 || extent.height == 0) {
-			extent = vexWindow.getExtent();
-			glfwWaitEvents();
-		}
-		vkDeviceWaitIdle(vexDevice.device());
-		// Delete lveSwapChain = nullptr; when I recreat the updated swapChain.
-		vexSwapChain = nullptr;
-		vexSwapChain = std::make_unique<VexSwapChain>(vexDevice, extent);
-		createPipeline();
-	}
-
-	void FirstApp::createCommandBuffers() {
-		commandBuffers.resize(vexSwapChain->imageCount());
-
-		VkCommandBufferAllocateInfo allocInfo{};
-		allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-		allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-		allocInfo.commandPool = vexDevice.getCommandPool();
-		allocInfo.commandBufferCount = static_cast<uint32_t>(commandBuffers.size());
-
-		if (vkAllocateCommandBuffers(vexDevice.device(), &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
-			throw std::runtime_error("failed to allocate command buffers");
-		}
-	}
-
-	void FirstApp::recordCommandBuffer(int imageIndex) {
-		VkCommandBufferBeginInfo beginInfo{};
-		beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-		if (vkBeginCommandBuffer(commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS) {
-			throw std::runtime_error("recording command buffer failed");
-		}
-
-		VkRenderPassBeginInfo renderPassInfo{};
-		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-		renderPassInfo.renderPass = vexSwapChain->getRenderPass();
-		renderPassInfo.framebuffer = vexSwapChain->getFrameBuffer(imageIndex);
-
-		renderPassInfo.renderArea.offset = { 0, 0 };
-		renderPassInfo.renderArea.extent = vexSwapChain->getSwapChainExtent();
-
-		std::array<VkClearValue, 2> clearValues{};
-		clearValues[0].color = { 0.1f, 0.1f, 0.1f, 1.0f };
-		clearValues[1].depthStencil = { 1.0f, 0 };
-		renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-		renderPassInfo.pClearValues = clearValues.data();
-
-		vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
-		VkViewport viewport{};
-		viewport.x = 0.0f;
-		viewport.y = 0.0f;
-		viewport.width = static_cast<float>(vexSwapChain->getSwapChainExtent().width);
-		viewport.height = static_cast<float>(vexSwapChain->getSwapChainExtent().height);
-		viewport.minDepth = 0.0f;
-		viewport.maxDepth = 1.0f;
-		VkRect2D scissor{ {0, 0}, vexSwapChain->getSwapChainExtent() };
-		vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
-		vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
-
-		vexPipeline->bind(commandBuffers[imageIndex]);
-		vexModel->bind(commandBuffers[imageIndex]);
-		vexModel->draw(commandBuffers[imageIndex]);
-
-		vkCmdEndRenderPass(commandBuffers[imageIndex]);
-		if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
-			throw std::runtime_error("record command buffer failed");
-		}
-	}
-	void FirstApp::drawFrame() {
-		uint32_t imageIndex;
-		auto result = vexSwapChain->acquireNextImage(&imageIndex);
-
-		if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-			recreateSwapChain();
-			return;
-		}
-
-		if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-			throw std::runtime_error("failed to acquire swap chain image");
-		}
-		recordCommandBuffer(imageIndex);
-		result = vexSwapChain->submitCommandBuffers(&commandBuffers[imageIndex], &imageIndex);
-		if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
-			vexWindow.wasWindowResized()) {
-			vexWindow.resetWindowResizedFlag();
-			recreateSwapChain();
-			return;
-		}
-
-		if (result != VK_SUCCESS) {
-			throw std::runtime_error("failed to present swap chain image");
-		}
+		gameObjects.push_back(std::move(triangle));
 	}
 }

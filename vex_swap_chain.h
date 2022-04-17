@@ -6,6 +6,7 @@
 #include <vulkan/vulkan.h>
 
 // std lib headers
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -15,6 +16,7 @@ namespace vex {
 		static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
 		VexSwapChain(VexDevice& deviceRef, VkExtent2D windowExtent);
+		VexSwapChain(VexDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<VexSwapChain> previous);
 		~VexSwapChain();
 
 		VexSwapChain(const VexSwapChain&) = delete;
@@ -37,7 +39,12 @@ namespace vex {
 		VkResult acquireNextImage(uint32_t* imageIndex);
 		VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
+		bool compareSwapChainFormats(const VexSwapChain& swapChain) const {
+			return swapChain.swapChainDepthFormat == swapChainDepthFormat && swapChain.swapChainImageFormat == swapChainImageFormat;
+		}
+
 	private:
+		void init();
 		void createSwapChain();
 		void createImageViews();
 		void createDepthResources();
@@ -53,6 +60,7 @@ namespace vex {
 		VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 
 		VkFormat swapChainImageFormat;
+		VkFormat swapChainDepthFormat;
 		VkExtent2D swapChainExtent;
 
 		std::vector<VkFramebuffer> swapChainFramebuffers;
@@ -68,6 +76,7 @@ namespace vex {
 		VkExtent2D windowExtent;
 
 		VkSwapchainKHR swapChain;
+		std::shared_ptr<VexSwapChain> oldSwapChain;
 
 		std::vector<VkSemaphore> imageAvailableSemaphores;
 		std::vector<VkSemaphore> renderFinishedSemaphores;

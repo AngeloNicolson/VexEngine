@@ -1,11 +1,11 @@
 #pragma once
 
 #include "vex_window.h"
-#include "vex_pipeline.h"
 #include "vex_device.h"
-#include "vex_swap_chain.h"
-#include "vex_model.h"
+#include "vex_renderer.h"
+#include "vex_game_object.h"
 
+//std
 #include <memory>
 #include <vector>
 
@@ -23,20 +23,12 @@ namespace vex {
 		void run();
 
 	private:
-		void loadModels();
-		void createPipelineLayout();
-		void createPipeline();
-		void createCommandBuffers();
-		void drawFrame();
-		void recreateSwapChain();
-		void recordCommandBuffer(int imageIndex);
+		void loadGameObjects();
 
 		VexWindow vexWindow{ WIDTH, HEIGHT, "VEXOID" };
 		VexDevice vexDevice{ vexWindow };
-		std::unique_ptr<VexSwapChain> vexSwapChain;
-		std::unique_ptr<VexPipeline> vexPipeline;
-		VkPipelineLayout pipelineLayout;
-		std::vector<VkCommandBuffer> commandBuffers;
-		std::unique_ptr<VexModel> vexModel;
+		VexRenderer vexRenderer{ vexWindow, vexDevice };
+
+		std::vector<VexGameObject> gameObjects;
 	};
 }

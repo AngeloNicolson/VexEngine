@@ -39,6 +39,12 @@
     <ClCompile Include="vex_model.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="vex_renderer.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="simple_render_system.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vex_device.h">
@@ -59,6 +65,15 @@
     <ClInclude Include="vex_model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vex_game_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vex_renderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simple_render_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="simple_shader.vert">
@@ -67,13 +82,13 @@
     <None Include="simple_shader.frag">
       <Filter>shaders</Filter>
     </None>
+    <None Include="compile.bat">
+      <Filter>shaders</Filter>
+    </None>
     <None Include="simple_shader.frag.spv">
       <Filter>shaders</Filter>
     </None>
     <None Include="simple_shader.vert.spv">
-      <Filter>shaders</Filter>
-    </None>
-    <None Include="compile.bat">
       <Filter>shaders</Filter>
     </None>
   </ItemGroup>

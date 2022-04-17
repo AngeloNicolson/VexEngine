@@ -12,6 +12,18 @@
 namespace vex {
 	VexSwapChain::VexSwapChain(VexDevice& deviceRef, VkExtent2D extent)
 		: device{ deviceRef }, windowExtent{ extent } {
+		init();
+	}
+
+	VexSwapChain::VexSwapChain(VexDevice& deviceRef, VkExtent2D extent, std::shared_ptr<VexSwapChain> previous)
+		: device{ deviceRef }, windowExtent{ extent }, oldSwapChain{ previous }{
+		init();
+
+		//Cleaning up old swap chain s its not needed
+		oldSwapChain = nullptr;
+	}
+
+	void VexSwapChain::init() {
 		createSwapChain();
 		createImageViews();
 		createRenderPass();
@@ -162,7 +174,7 @@ namespace vex {
 		createInfo.presentMode = presentMode;
 		createInfo.clipped = VK_TRUE;
 
-		createInfo.oldSwapchain = VK_NULL_HANDLE;
+		createInfo.oldSwapchain = oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
 		if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
 			throw std::runtime_error("failed to create swap chain!");
@@ -237,15 +249,12 @@ namespace vex {
 		subpass.pDepthStencilAttachment = &depthAttachmentRef;
 
 		VkSubpassDependency dependency = {};
+		dependency.dstSubpass = 0;
+		dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+		dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 		dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
 		dependency.srcAccessMask = 0;
-		dependency.srcStageMask =
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-		dependency.dstSubpass = 0;
-		dependency.dstStageMask =
-			VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
-		dependency.dstAccessMask =
-			VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+		dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
 
 		std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
 		VkRenderPassCreateInfo renderPassInfo = {};
@@ -289,6 +298,7 @@ namespace vex {
 
 	void VexSwapChain::createDepthResources() {
 		VkFormat depthFormat = findDepthFormat();
+		swapChainDepthFormat = depthFormat;
 		VkExtent2D swapChainExtent = getSwapChainExtent();
 
 		depthImages.resize(imageCount());
