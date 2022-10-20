@@ -16,7 +16,7 @@ namespace vex {
 	}
 
 	VexSwapChain::VexSwapChain(VexDevice& deviceRef, VkExtent2D extent, std::shared_ptr<VexSwapChain> previous)
-		: device{ deviceRef }, windowExtent{ extent }, oldSwapChain{ previous }{
+		: device{ deviceRef }, windowExtent{ extent }, oldSwapChain{ previous } {
 		init();
 
 		//Cleaning up old swap chain s its not needed

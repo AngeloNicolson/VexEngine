@@ -19,6 +19,7 @@ namespace vex {
 		VexRenderer& operator = (const VexRenderer&) = delete;
 
 		VkRenderPass getSwapChainRenderPass() const { return vexSwapChain->getRenderPass(); }
+		float getAspectRataio() const { return vexSwapChain->extentAspectRatio(); }
 		bool isFrameInProgress() const { return isFrameStarted; }
 
 		VkCommandBuffer getCurrentCommandBuffer() const {

@@ -12,7 +12,8 @@ namespace vex {
 		VexDevice& device,
 		const std::string& vertFilepath,
 		const std::string fragFilepath,
-		const PipelineConfigInfo& configInfo) : vexDevice(device) {
+		const PipelineConfigInfo& configInfo)
+		: vexDevice(device) {
 		createGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
 	}
 

@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;D:\Game-Engine\libs\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -107,7 +107,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;D:\Game-Engine\libs\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -126,7 +126,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;D:\Game-Engine\libs\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -145,7 +145,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Game-Engine\Dependencies\glm;D:\Game-Engine\Dependencies\GLFW\glfw-3.3.7.bin.WIN64\include;D:\Game-Engine\Dependencies\Vulkan\VulkanSDK\1.3.204.1\Include;D:\Game-Engine\libs\tinyobjloader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard_C>Default</LanguageStandard_C>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
@@ -160,8 +160,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="first_app.cpp" />
+    <ClCompile Include="keyboard_movement_controller.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="simple_render_system.cpp" />
+    <ClCompile Include="vex_camera.cpp" />
     <ClCompile Include="vex_device.cpp" />
     <ClCompile Include="vex_model.cpp" />
     <ClCompile Include="vex_pipeline.cpp" />
@@ -171,7 +173,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="first_app.h" />
+    <ClInclude Include="keyboard_movement_controller.h" />
     <ClInclude Include="simple_render_system.h" />
+    <ClInclude Include="vex_camera.h" />
     <ClInclude Include="vex_device.h" />
     <ClInclude Include="vex_game_object.h" />
     <ClInclude Include="vex_model.h" />

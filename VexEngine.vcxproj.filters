@@ -45,6 +45,12 @@
     <ClCompile Include="simple_render_system.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="vex_camera.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
+    <ClCompile Include="keyboard_movement_controller.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vex_device.h">
@@ -72,6 +78,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="simple_render_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vex_camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="keyboard_movement_controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

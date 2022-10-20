@@ -99,7 +99,7 @@ namespace vex {
 	}
 	void VexRenderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer) {
 		assert(isFrameStarted && "Cant call beginSwapChainRenderPass if frame is not in progress");
-		assert(commandBuffer == getCurrentCammandBuffer() && "Cant Begin renderpass on cammand buffer from a different frame");
+		assert(commandBuffer == getCurrentCommandBuffer() && "Cant Begin renderpass on cammand buffer from a different frame");
 		VkRenderPassBeginInfo renderPassInfo{};
 		renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
 		renderPassInfo.renderPass = vexSwapChain->getRenderPass();
@@ -129,7 +129,7 @@ namespace vex {
 	}
 	void VexRenderer::endSwapChainRenderPass(VkCommandBuffer commandBuffer) {
 		assert(isFrameStarted && "Cant call endSwapChainRenderPass if frame is not in progress");
-		assert(commandBuffer == getCurrentCammandBuffer() && "Cant end renderpass on command buffer from a different frame");
+		assert(commandBuffer == getCurrentCommandBuffer() && "Cant end renderpass on command buffer from a different frame");
 		vkCmdEndRenderPass(commandBuffer);
 	}
 }

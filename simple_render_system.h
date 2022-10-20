@@ -1,5 +1,6 @@
 #pragma once
 
+#include "vex_camera.h"
 #include "vex_pipeline.h"
 #include "vex_device.h"
 #include "vex_game_object.h"
@@ -19,7 +20,7 @@ namespace vex {
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
 		SimpleRenderSystem& operator = (const SimpleRenderSystem&) = delete;
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VexGameObject>& gameObjects);
+		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VexGameObject>& gameObjects, const VexCamera& camera);
 
 	private:
 		void createPipelineLayout();
