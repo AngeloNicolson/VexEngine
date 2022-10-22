@@ -182,6 +182,7 @@
     <ClInclude Include="vex_pipeline.h" />
     <ClInclude Include="vex_renderer.h" />
     <ClInclude Include="vex_swap_chain.h" />
+    <ClInclude Include="vex_utils.h" />
     <ClInclude Include="vex_window.h" />
   </ItemGroup>
   <ItemGroup>

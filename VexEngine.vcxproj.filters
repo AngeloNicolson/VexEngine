@@ -86,6 +86,9 @@
     <ClInclude Include="keyboard_movement_controller.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="vex_utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="simple_shader.vert">
