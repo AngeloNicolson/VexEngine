@@ -60,12 +60,12 @@ namespace vex {
 	// Loads the game models
 	void FirstApp::loadGameObjects() {
 		std::shared_ptr<VexModel> vexModel =
-			VexModel::createModelFromFile(vexDevice, "D:\\Game-Engine\\TestModels\\colored_cube.obj");
+			VexModel::createModelFromFile(vexDevice, "D:\\Game-Engine\\TestModels\\smooth_vase.obj");
 
 		auto gameObj = VexGameObject::createGameObject();
 		gameObj.model = vexModel;
 		gameObj.transform.translation = { .0f, .0f, 2.5f };
-		gameObj.transform.scale = glm::vec3(0.4f);
+		gameObj.transform.scale = glm::vec3(1.f);
 		gameObjects.push_back(std::move(gameObj));
 	}
 }  // namespace lve

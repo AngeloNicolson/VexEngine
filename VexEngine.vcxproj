@@ -165,6 +165,7 @@
     <ClCompile Include="simple_render_system.cpp" />
     <ClCompile Include="vex_camera.cpp" />
     <ClCompile Include="vex_device.cpp" />
+    <ClCompile Include="vex_game_object.cpp" />
     <ClCompile Include="vex_model.cpp" />
     <ClCompile Include="vex_pipeline.cpp" />
     <ClCompile Include="vex_renderer.cpp" />
