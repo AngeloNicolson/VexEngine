@@ -18,11 +18,15 @@
 namespace vex {
 	// Ubo MEANING: Uniform buffer object
 	struct GlobalUbo {
-		glm::mat4 projectionView{ 1.f };
-		glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
+		alignas(16) glm::mat4 projectionView{ 1.f };
+		alignas(16) glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
 	};
 
 	FirstApp::FirstApp() {
+		globalPool = VexDescriptorPool::Builder(vexDevice)
+			.setMaxSets(VexSwapChain::MAX_FRAMES_IN_FLIGHT)
+			.addPoolSize(VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VexSwapChain::MAX_FRAMES_IN_FLIGHT)
+			.build();
 		loadGameObjects();
 	}
 
@@ -40,8 +44,20 @@ namespace vex {
 			uboBuffers[i]->map();
 		}
 
+		auto globalSetLayout = VexDescriptorSetLayout::Builder(vexDevice)
+			.addBinding(0, VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, VK_SHADER_STAGE_VERTEX_BIT)
+			.build();
+
+		std::vector<VkDescriptorSet> globalDescriptorSets(VexSwapChain::MAX_FRAMES_IN_FLIGHT);
+		for (int i = 0; i < globalDescriptorSets.size(); i++) {
+			auto bufferInfo = uboBuffers[i]->descriptorInfo();
+			VexDescriptorWriter(*globalSetLayout, *globalPool)
+				.writeBuffer(0, &bufferInfo)
+				.build(globalDescriptorSets[i]);
+		}
+
 		SimpleRenderSystem simpleRenderSystem{
-			vexDevice, vexRenderer.getSwapChainRenderPass() };
+			vexDevice, vexRenderer.getSwapChainRenderPass(), globalSetLayout->getDescriptorSetLayout() };
 		VexCamera camera{};
 		//camera.setViewTarget(glm::vec3(-1.f, -2.f, -2.f), glm::vec3(0.f, 0.f, 2.5f));
 
@@ -71,7 +87,8 @@ namespace vex {
 				frameIndex,
 				frameTime,
 				commandBuffer,
-				camera
+				camera,
+				globalDescriptorSets[frameIndex]
 				};
 
 				// Update

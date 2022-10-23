@@ -11,5 +11,6 @@ namespace vex {
 		float frameTime;
 		VkCommandBuffer commandBuffer;
 		VexCamera& camera;
+		VkDescriptorSet globalDescriptorSet;
 	};
 }

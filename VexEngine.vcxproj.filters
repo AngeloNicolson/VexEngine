@@ -57,6 +57,9 @@
     <ClCompile Include="vex_buffer.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="vex_descriptor.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="vex_device.h">
@@ -99,6 +102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vex_frame_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="vex_descriptors.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

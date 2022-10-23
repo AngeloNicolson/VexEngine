@@ -15,7 +15,7 @@ namespace vex {
 	class SimpleRenderSystem {
 	public:
 
-		SimpleRenderSystem(VexDevice& device, VkRenderPass renderPass);
+		SimpleRenderSystem(VexDevice& device, VkRenderPass renderPass, VkDescriptorSetLayout globalSetLayout);
 		~SimpleRenderSystem();
 
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
@@ -26,7 +26,7 @@ namespace vex {
 			std::vector<VexGameObject>& gameObjects);
 
 	private:
-		void createPipelineLayout();
+		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);
 		void createPipeline(VkRenderPass renderPass);
 
 		VexDevice& vexDevice;
