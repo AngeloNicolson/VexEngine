@@ -180,6 +180,7 @@
     <ClInclude Include="vex_buffer.h" />
     <ClInclude Include="vex_camera.h" />
     <ClInclude Include="vex_device.h" />
+    <ClInclude Include="vex_frame_info.h" />
     <ClInclude Include="vex_game_object.h" />
     <ClInclude Include="vex_model.h" />
     <ClInclude Include="vex_pipeline.h" />

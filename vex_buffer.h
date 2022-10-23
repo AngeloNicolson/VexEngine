@@ -1,6 +1,6 @@
 #pragma once
 
-#include "vex_device.hpp"
+#include "vex_device.h"
 
 namespace vex {
 	class VexBuffer {
