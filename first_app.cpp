@@ -18,8 +18,11 @@
 namespace vex {
 	// Ubo MEANING: Uniform buffer object
 	struct GlobalUbo {
-		alignas(16) glm::mat4 projectionView{ 1.f };
-		alignas(16) glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
+		glm::mat4 projectionView{ 1.f };
+
+		glm::vec4 ambientLightColor{ 1.f, 1.f, 1.f, 0.2f };
+		glm::vec3 lightPosition{ -1.f };
+		alignas(16) glm::vec4 lightColor{ 1.f }; // w is light entensity
 	};
 
 	FirstApp::FirstApp() {
@@ -62,6 +65,7 @@ namespace vex {
 		//camera.setViewTarget(glm::vec3(-1.f, -2.f, -2.f), glm::vec3(0.f, 0.f, 2.5f));
 
 		auto viewerObject = VexGameObject::createGameObject();
+		viewerObject.transform.translation.z = -2.5f; // Moved the camera back
 		KeyboardMovementController cameraController{};
 
 		auto currentTime = std::chrono::high_resolution_clock::now();
@@ -79,7 +83,7 @@ namespace vex {
 
 			float aspect = vexRenderer.getAspectRataio();
 			//camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
-			camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
+			camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.05f, 1000.f);
 
 			if (auto commandBuffer = vexRenderer.beginFrame()) {
 				int frameIndex = vexRenderer.getFrameIndex();
@@ -113,8 +117,15 @@ namespace vex {
 
 		auto gameObj = VexGameObject::createGameObject();
 		gameObj.model = vexModel;
-		gameObj.transform.translation = { .0f, .0f, 2.5f };
+		gameObj.transform.translation = { 0.f, 0.3f, 0.f };
 		gameObj.transform.scale = glm::vec3(1.f);
 		gameObjects.push_back(std::move(gameObj));
+
+		vexModel = VexModel::createModelFromFile(vexDevice, "D:\\Game-Engine\\TestModels\\floor.obj");
+		auto floor = VexGameObject::createGameObject();
+		floor.model = vexModel;
+		floor.transform.translation = { 0.f, .3f, 0.f };
+		floor.transform.scale = { 3.f, 1.f, 3.f };
+		gameObjects.push_back(std::move(floor));
 	}
 }  // namespace lve
