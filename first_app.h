@@ -4,6 +4,7 @@
 #include "vex_device.h"
 #include "vex_renderer.h"
 #include "vex_game_object.h"
+#include "vex_descriptors.h"
 
 //std
 #include <memory>
@@ -29,6 +30,8 @@ namespace vex {
 		VexDevice vexDevice{ vexWindow };
 		VexRenderer vexRenderer{ vexWindow, vexDevice };
 
+		// Order of these declarations is important
+		std::unique_ptr<VexDescriptorPool> globalPool{};
 		std::vector<VexGameObject> gameObjects;
 	};
 }
