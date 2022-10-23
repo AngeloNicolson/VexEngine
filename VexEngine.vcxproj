@@ -163,6 +163,7 @@
     <ClCompile Include="keyboard_movement_controller.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="simple_render_system.cpp" />
+    <ClCompile Include="vex_buffer.cpp" />
     <ClCompile Include="vex_camera.cpp" />
     <ClCompile Include="vex_device.cpp" />
     <ClCompile Include="vex_game_object.cpp" />
@@ -176,8 +177,10 @@
     <ClInclude Include="first_app.h" />
     <ClInclude Include="keyboard_movement_controller.h" />
     <ClInclude Include="simple_render_system.h" />
+    <ClInclude Include="vex_buffer.h" />
     <ClInclude Include="vex_camera.h" />
     <ClInclude Include="vex_device.h" />
+    <ClInclude Include="vex_frame_info.h" />
     <ClInclude Include="vex_game_object.h" />
     <ClInclude Include="vex_model.h" />
     <ClInclude Include="vex_pipeline.h" />

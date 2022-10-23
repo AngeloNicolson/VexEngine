@@ -1,6 +1,7 @@
 #pragma once
 
 #include "vex_device.h"
+#include "vex_buffer.h"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -54,13 +55,11 @@ namespace vex {
 
 		VexDevice& vexDevice;
 
-		VkBuffer vertexBuffer;
-		VkDeviceMemory vertexBufferMemory;
+		std::unique_ptr<VexBuffer> vertexBuffer;
 		uint32_t vertexCount;
 
 		bool hasIndexBuffer = false;
-		VkBuffer indexBuffer;
-		VkDeviceMemory indexBufferMemory;
+		std::unique_ptr<VexBuffer> indexBuffer;
 		uint32_t indexCount;
 	};
 }

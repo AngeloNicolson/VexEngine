@@ -4,6 +4,7 @@
 #include "vex_pipeline.h"
 #include "vex_device.h"
 #include "vex_game_object.h"
+#include "vex_frame_info.h"
 
 //std
 #include <memory>
@@ -20,7 +21,9 @@ namespace vex {
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
 		SimpleRenderSystem& operator = (const SimpleRenderSystem&) = delete;
 
-		void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<VexGameObject>& gameObjects, const VexCamera& camera);
+		void renderGameObjects(
+			FrameInfo& frameInfo,
+			std::vector<VexGameObject>& gameObjects);
 
 	private:
 		void createPipelineLayout();

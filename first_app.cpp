@@ -3,6 +3,7 @@
 #include "keyboard_movement_controller.h"
 #include "vex_camera.h"
 #include "simple_render_system.h"
+#include "vex_buffer.h"
 //libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -15,6 +16,12 @@
 #include <cassert>
 
 namespace vex {
+	// Ubo MEANING: Uniform buffer object
+	struct GlobalUbo {
+		glm::mat4 projectionView{ 1.f };
+		glm::vec3 lightDirection = glm::normalize(glm::vec3{ 1.f, -3.f, -1.f });
+	};
+
 	FirstApp::FirstApp() {
 		loadGameObjects();
 	}
@@ -22,6 +29,17 @@ namespace vex {
 	FirstApp::~FirstApp() {}
 
 	void FirstApp::run() {
+		std::vector<std::unique_ptr<VexBuffer>> uboBuffers(VexSwapChain::MAX_FRAMES_IN_FLIGHT);
+		for (int i = 0; i < uboBuffers.size(); i++) {
+			uboBuffers[i] = std::make_unique<VexBuffer>(
+				vexDevice,
+				sizeof(GlobalUbo),
+				1,
+				VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT,
+				VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT /*| VK_MEMORY_PROPERTY_HOST_COHERENT_BIT*/);
+			uboBuffers[i]->map();
+		}
+
 		SimpleRenderSystem simpleRenderSystem{
 			vexDevice, vexRenderer.getSwapChainRenderPass() };
 		VexCamera camera{};
@@ -48,8 +66,22 @@ namespace vex {
 			camera.setPerspectiveProjection(glm::radians(50.f), aspect, 0.1f, 10.f);
 
 			if (auto commandBuffer = vexRenderer.beginFrame()) {
+				int frameIndex = vexRenderer.getFrameIndex();
+				FrameInfo frameInfo{
+				frameIndex,
+				frameTime,
+				commandBuffer,
+				camera
+				};
+
+				// Update
+				GlobalUbo ubo{};
+				ubo.projectionView = camera.getProjection() * camera.getView();
+				uboBuffers[frameIndex]->writeToBuffer(&ubo);
+				uboBuffers[frameIndex]->flush();
+				// Render
 				vexRenderer.beginSwapChainRenderPass(commandBuffer);
-				simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+				simpleRenderSystem.renderGameObjects(frameInfo, gameObjects);
 				vexRenderer.endSwapChainRenderPass(commandBuffer);
 				vexRenderer.endFrame();
 			}
