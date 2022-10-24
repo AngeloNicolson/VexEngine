@@ -6,18 +6,18 @@
 <br />
 <div align="center">
   <a href="https://github.com/othneildrew/Best-README-Template">
-    <img src="images/logo.png" alt="Logo" width="80" height="80">
   </a>
 
   <h1 align="center">VexEngine</h1>
 
   <p align="center">
-    The beginning of my graphics programming!
+    The beginning of my graphics programming journey!
     <br/>
     <a href="https://github.com/AngeloNicolson/VexEngine">Explore</a>
     ·
-    <a href="https://github.com/AngeloNicolson/VexEngine/issues">Report Bug</a>
-    .
+    <a href="https://github.com/AngeloNicolson/VexEngine/issues">Report a Bug</a>
+    ·
+    <a href="https://github.com/AngeloNicolson/VexEngine/issues">Suggest feature</a>
   </p>
 </div>
 
