@@ -21,9 +21,7 @@ namespace vex {
 		SimpleRenderSystem(const SimpleRenderSystem&) = delete;
 		SimpleRenderSystem& operator = (const SimpleRenderSystem&) = delete;
 
-		void renderGameObjects(
-			FrameInfo& frameInfo,
-			std::vector<VexGameObject>& gameObjects);
+		void renderGameObjects(FrameInfo& frameInfo);
 
 	private:
 		void createPipelineLayout(VkDescriptorSetLayout globalSetLayout);

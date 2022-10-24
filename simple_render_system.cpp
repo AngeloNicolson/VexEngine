@@ -54,7 +54,8 @@ namespace vex {
 		vexPipeline = std::make_unique<VexPipeline>(vexDevice, "simple_shader.vert.spv", "simple_shader.frag.spv", pipelineConfig);
 	}
 
-	void SimpleRenderSystem::renderGameObjects(FrameInfo& frameInfo, std::vector<VexGameObject>& gameObjects) {
+	void SimpleRenderSystem::renderGameObjects(
+		FrameInfo& frameInfo) {
 		vexPipeline->bind(frameInfo.commandBuffer);
 
 		vkCmdBindDescriptorSets(
@@ -68,7 +69,9 @@ namespace vex {
 			nullptr
 		);
 
-		for (auto& obj : gameObjects) {
+		for (auto& kv : frameInfo.gameObjects) {
+			auto& obj = kv.second;
+			if (obj.model == nullptr) continue;
 			SimplePushConstantData push{};
 			push.modelMatrix = obj.transform.mat4();
 			push.normalMatrix = obj.transform.normalMatrix();

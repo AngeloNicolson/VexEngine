@@ -4,6 +4,7 @@
 
 //lib
 #include <vulkan/vulkan.h>
+#include "vex_game_object.h"
 
 namespace vex {
 	struct FrameInfo {
@@ -12,5 +13,6 @@ namespace vex {
 		VkCommandBuffer commandBuffer;
 		VexCamera& camera;
 		VkDescriptorSet globalDescriptorSet;
+		VexGameObject::Map& gameObjects;
 	};
 }

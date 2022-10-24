@@ -32,6 +32,6 @@ namespace vex {
 
 		// Order of these declarations is important
 		std::unique_ptr<VexDescriptorPool> globalPool{};
-		std::vector<VexGameObject> gameObjects;
+		VexGameObject::Map gameObjects;
 	};
 }
