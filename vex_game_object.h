@@ -5,6 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include <memory>
+#include <unordered_map>
 
 namespace vex {
 	struct TransformComponent {
@@ -22,6 +23,7 @@ namespace vex {
 	class VexGameObject {
 	public:
 		using id_t = unsigned int;
+		using Map = std::unordered_map<id_t, VexGameObject>;
 
 		static VexGameObject createGameObject() {
 			static id_t currentId = 0;
