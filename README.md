@@ -64,9 +64,9 @@ Here's why:
 * I want indi developers to be able to create amazing games that rival AAA companie.
 * To give indi devs a way to tell thier stories without any financial obligations to allow them to grow and help create a fair and thriving industry..
 
-These are just ideas.... 
+These are just ideas...
 
-..for now.
+...for now.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
