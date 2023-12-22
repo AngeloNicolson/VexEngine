@@ -12,15 +12,12 @@
 
 #include "myth_engine_device.hpp"
 
+#include <cstdint>
 #include <string>
 #include <vector>
+#include <vulkan/vulkan_core.h>
 
 namespace myth_engine {
-
-/**
- * @file
- * Part of the Myth Engine, a Vulkan-based graphics engine.
- */
 
 /**
  * @brief Struct used to organize data to configure the pipeline.
@@ -43,8 +40,19 @@ public:
    * @param vertFilepath The file path for the vertex shader.
    * @param fragFilepath The file path for the fragment shader.
    */
-  MythPipeline(const std::string &vertFilepath,
-               const std::string &fragFilepath);
+  MythPipeline(MythEngineDevice &device, const std::string &vertFilepath,
+               const std::string &fragFilepath,
+               const PipelineConfigInfo &configInfo);
+
+  ~MythPipeline(){};
+
+  // Copy constructor - Disabled to prevent copying of MythPipeline objects
+  MythPipeline(const MythPipeline &) = delete;
+  // Deleted copy assignment operator - Prevents assignment of MythPipeline
+  void operator=(const MythPipeline &) = delete;
+
+  static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width,
+                                                      uint32_t height);
 
 private:
   /**
@@ -62,7 +70,18 @@ private:
    * @param fragFilepath The file path for the fragment shader.
    */
   void createGraphicsPipeline(const std::string &vertFilepath,
-                              const std::string &fragFilepath);
+                              const std::string &fragFilepath,
+                              const PipelineConfigInfo &configInfo);
+
+  void createShaderModule(const std::vector<char> &code,
+                          VkShaderModule *shaderModule);
+
+  // Under other circumstances this could cause a dangling pointer, but since
+  // the pipeline cannot exist without device then this will be ok
+  MythEngineDevice &mythEngineDevice;
+  VkPipeline graphicsPipeline;
+  VkShaderModule vertShaderModule;
+  VkShaderModule fragSHaderModule;
 };
 
 } // namespace myth_engine

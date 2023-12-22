@@ -286,6 +286,14 @@ std::vector<const char *> MythEngineDevice::getRequiredExtensions() {
   return extensions;
 }
 
+/**
+ * @brief Checks for the required GLFW instance extensions.
+ *
+ * This function enumerates available Vulkan instance extensions and compares
+ * them against the required extensions for GLFW. If any required extension is
+ * missing, it throws a runtime error indicating the absence of the necessary
+ * GLFW extension.
+ */
 void MythEngineDevice::hasGflwRequiredInstanceExtensions() {
   uint32_t extensionCount = 0;
   vkEnumerateInstanceExtensionProperties(nullptr, &extensionCount, nullptr);

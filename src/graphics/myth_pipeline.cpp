@@ -1,15 +1,20 @@
 #include "myth_pipeline.hpp"
 
 // STD
+#include <cstdint>
 #include <fstream>
 #include <iostream>
 #include <stdexcept>
+#include <vulkan/vulkan_core.h>
 
 namespace myth_engine {
 
-MythPipeline::MythPipeline(const std::string &vertFilepath,
-                           const std::string &fragFilepath) {
-  createGraphicsPipeline(vertFilepath, fragFilepath);
+MythPipeline::MythPipeline(MythEngineDevice &device,
+                           const std::string &vertFilepath,
+                           const std::string &fragFilepath,
+                           const PipelineConfigInfo &configInfo)
+    : mythEngineDevice(device) {
+  createGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
 }
 
 std::vector<char> MythPipeline::readFile(const std::string &filepath) {
@@ -37,13 +42,39 @@ std::vector<char> MythPipeline::readFile(const std::string &filepath) {
 
   return buffer;
 }
-void MythPipeline::createGraphicsPipeline(const std::string &vertFilepath,
-                                          const std::string &fragFilepath) {
+void MythPipeline::createGraphicsPipeline(
+    const std::string &vertFilepath, const std::string &fragFilepath,
+    const PipelineConfigInfo &configInfo) {
   auto vertCode = readFile(vertFilepath);
   auto fragCode = readFile(fragFilepath);
 
   std::cout << "Vertex Shader Code Size: " << vertCode.size() << std::endl;
   std::cout << "Fragment Shader Code Size: " << fragCode.size() << std::endl;
+}
+
+// Function to create a Vulkan shader module from shader code
+void MythPipeline::createShaderModule(const std::vector<char> &code,
+                                      VkShaderModule *shaderModule) {
+  // Create Vulkan Shader Module Create Info structure
+  VkShaderModuleCreateInfo createInfo{};
+  // Define the type of structure
+  createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+  // Set the size of the shader code
+  createInfo.codeSize = code.size();
+  // Set the pointer to the shader code
+  createInfo.pCode = reinterpret_cast<const uint32_t *>(code.data());
+
+  if (vkCreateShaderModule(mythEngineDevice.device(), &createInfo, nullptr,
+                           shaderModule) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to create shader module");
+  }
+}
+
+PipelineConfigInfo MythPipeline::defaultPipelineConfigInfo(uint32_t width,
+                                                           uint32_t height) {
+  PipelineConfigInfo configInfo{};
+
+  return configInfo;
 }
 
 } // namespace myth_engine
