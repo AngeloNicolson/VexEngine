@@ -1,6 +1,7 @@
 #ifndef WINDOW_H
 #define WINDOW_H
 
+#include <vulkan/vulkan_core.h>
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 #include <string>
@@ -12,6 +13,8 @@ public:
   ~MythWindow();
 
   bool shouldClose() { return glfwWindowShouldClose(window); };
+
+  void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
 private:
   const int WIDTH;

@@ -1,6 +1,7 @@
 #ifndef MYTH_ENGINE_H
 #define MYTH_ENGINE_H
 
+#include "../graphics/myth_pipeline.hpp"
 #include "../graphics/myth_window.hpp"
 
 namespace myth_engine {
@@ -14,6 +15,8 @@ public:
 
 private:
   MythWindow mythWindow{WIDTH, HEIGHT, "Hello Vulkan"};
+  MythPipeline mythPipeline{"graphics/shaders/simple_shader.vert.spv",
+                            "graphics/shaders/simple_shader.frag.spv"};
 };
 
 } // namespace myth_engine

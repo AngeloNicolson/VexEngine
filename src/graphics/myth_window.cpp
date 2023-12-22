@@ -1,6 +1,9 @@
 #include "myth_window.hpp"
 #include <GLFW/glfw3.h>
 
+// STD
+#include <stdexcept>
+
 namespace myth_engine {
 
 MythWindow::MythWindow(int w, int h, std::string name)
@@ -25,5 +28,12 @@ void MythWindow::initWindow() {
   window =
       glfwCreateWindow(WIDTH, HEIGHT, windowName.c_str(), nullptr, nullptr);
 }
+void MythWindow::createWindowSurface(VkInstance instance,
+                                     VkSurfaceKHR *surface) {
 
+  if (glfwCreateWindowSurface(instance, window, nullptr, surface) !=
+      VK_SUCCESS) {
+    throw std::runtime_error("Surface failed to create window surface");
+  }
+}
 } // namespace myth_engine
