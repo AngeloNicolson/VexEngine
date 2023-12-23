@@ -64,6 +64,14 @@ public:
   // Deleted copy assignment operator - Prevents assignment of MythPipeline
   void operator=(const MythPipeline &) = delete;
 
+  /**
+   * @brief Binds a Vulkan command buffer.
+   *
+   * Binds the specified Vulkan command buffer for use.
+   * @param commandBuffer The Vulkan command buffer to be bound.
+   */
+  void bind(VkCommandBuffer commandBuffer);
+
   static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width,
                                                       uint32_t height);
 

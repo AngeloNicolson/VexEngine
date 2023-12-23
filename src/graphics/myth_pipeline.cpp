@@ -145,6 +145,12 @@ void MythPipeline::createShaderModule(const std::vector<char> &code,
     throw std::runtime_error("Failed to create shader module");
   }
 }
+
+void MythPipeline::bind(VkCommandBuffer commandBuffer) {
+  vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS,
+                    graphicsPipeline);
+}
+
 /**
  * @brief Generates a default configuration for a Vulkan pipeline based on
  * specified width and height.
