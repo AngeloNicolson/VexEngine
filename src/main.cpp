@@ -8,7 +8,7 @@
 int main() {
 
   // Instance of engine
-  myth_engine::engine engine{};
+  myth_engine::Engine engine{};
 
   try {
     engine.run();

@@ -1,4 +1,4 @@
-#include "my_engine_swap_chain.hpp"
+#include "myth_engine_swap_chain.hpp"
 
 // std
 #include <array>
@@ -9,7 +9,7 @@
 #include <set>
 #include <stdexcept>
 
-namespace lve {
+namespace myth_engine {
 
 MythEngineSwapChain::MythEngineSwapChain(MythEngineDevice &deviceRef,
                                          VkExtent2D extent)
@@ -421,4 +421,4 @@ VkFormat MythEngineSwapChain::findDepthFormat() {
       VK_IMAGE_TILING_OPTIMAL, VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT);
 }
 
-} // namespace lve
+} // namespace myth_engine

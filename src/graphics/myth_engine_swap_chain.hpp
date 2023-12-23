@@ -20,7 +20,7 @@
 #include <string>
 #include <vector>
 
-namespace lve {
+namespace myth_engine {
 
 class MythEngineSwapChain {
 public:
@@ -92,5 +92,5 @@ private:
   size_t currentFrame = 0;
 };
 
-} // namespace lve
+} // namespace myth_engine
 #endif

@@ -2,25 +2,42 @@
 #define MYTH_ENGINE_H
 
 #include "../graphics/myth_engine_device.hpp"
+#include "../graphics/myth_engine_swap_chain.hpp"
 #include "../graphics/myth_pipeline.hpp"
 #include "../graphics/myth_window.hpp"
+#include <vulkan/vulkan_core.h>
+
+// STD
+#include <memory>
+#include <vector>
 
 namespace myth_engine {
-class engine {
+class Engine {
 
 public:
   static constexpr int WIDTH = 800;
   static constexpr int HEIGHT = 600;
 
+  Engine();
+  ~Engine();
   void run();
 
+  Engine(const Engine &) = delete;
+  Engine &operator=(const Engine &) = delete;
+
 private:
+  void createPipelineLayout();
+  void createPipeline();
+  void createCommandBuffers();
+  void drawFrame();
+
   MythWindow mythWindow{WIDTH, HEIGHT, "Hello Vulkan"};
   MythEngineDevice mythDevice{mythWindow};
-  MythPipeline mythPipeline{
-      mythDevice, "graphics/shaders/simple_shader.vert.spv",
-      "graphics/shaders/simple_shader.frag.spv",
-      MythPipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)};
+  MythEngineSwapChain mythEngineSwapChain{mythDevice, mythWindow.getExtent()};
+  std::unique_ptr<MythPipeline> mythPipeline;
+  VkPipelineLayout pipelineLayout;
+
+  std::vector<VkCommandBuffer> commandBuffers;
 };
 
 } // namespace myth_engine

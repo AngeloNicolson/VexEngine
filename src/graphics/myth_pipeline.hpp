@@ -30,7 +30,6 @@ struct PipelineConfigInfo {
   // Values stating how the different stages of the pipeline will work
   VkViewport viewport;
   VkRect2D scissor;
-  VkPipelineViewportStateCreateInfo viewportInfo;
   VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
   VkPipelineRasterizationStateCreateInfo rasterizationInfo;
   VkPipelineMultisampleStateCreateInfo multisampleInfo;
