@@ -67,11 +67,19 @@ MythEngineDevice::~MythEngineDevice() {
   vkDestroyInstance(instance, nullptr);
 }
 
+/**
+ * @brief Creates a Vulkan instance for the MythEngine device.
+ *
+ * This function sets up a Vulkan instance for the MythEngine device, specifying
+ * application and engine information, along with required extensions and
+ * validation layers.
+ */
 void MythEngineDevice::createInstance() {
   if (enableValidationLayers && !checkValidationLayerSupport()) {
     throw std::runtime_error("validation layers requested, but not available!");
   }
 
+  // Configure application information for the Vulkan instance
   VkApplicationInfo appInfo = {};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pApplicationName = "LittleVulkanEngine App";
@@ -80,16 +88,19 @@ void MythEngineDevice::createInstance() {
   appInfo.engineVersion = VK_MAKE_VERSION(1, 0, 0);
   appInfo.apiVersion = VK_API_VERSION_1_0;
 
+  // Configure instance creation information
   VkInstanceCreateInfo createInfo = {};
   createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
   createInfo.pApplicationInfo = &appInfo;
 
+  // Retrieve the required extensions
   auto extensions = getRequiredExtensions();
   createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
   createInfo.ppEnabledExtensionNames = extensions.data();
 
   VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo;
   if (enableValidationLayers) {
+    // If validation layers are enabled, configure debug information
     createInfo.enabledLayerCount =
         static_cast<uint32_t>(validationLayers.size());
     createInfo.ppEnabledLayerNames = validationLayers.data();
@@ -97,6 +108,7 @@ void MythEngineDevice::createInstance() {
     populateDebugMessengerCreateInfo(debugCreateInfo);
     createInfo.pNext = (VkDebugUtilsMessengerCreateInfoEXT *)&debugCreateInfo;
   } else {
+    // If validation layers are disabled, set debug info to null
     createInfo.enabledLayerCount = 0;
     createInfo.pNext = nullptr;
   }
@@ -133,9 +145,17 @@ void MythEngineDevice::pickPhysicalDevice() {
   std::cout << "physical device: " << properties.deviceName << std::endl;
 }
 
+/**
+ * @brief Creates a logical Vulkan device and queues associated with it.
+ *
+ * This function creates a logical Vulkan device based on the specified physical
+ * device, initializing queues for graphics and presentation.
+ */
 void MythEngineDevice::createLogicalDevice() {
+  // Find queue families supported by the physical device
   QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
+  // Set up queue creation information
   std::vector<VkDeviceQueueCreateInfo> queueCreateInfos;
   std::set<uint32_t> uniqueQueueFamilies = {indices.graphicsFamily,
                                             indices.presentFamily};
@@ -150,43 +170,43 @@ void MythEngineDevice::createLogicalDevice() {
     queueCreateInfos.push_back(queueCreateInfo);
   }
 
+  // Specify device features
   VkPhysicalDeviceFeatures deviceFeatures = {};
   deviceFeatures.samplerAnisotropy = VK_TRUE;
 
+  // Configure device creation information
   VkDeviceCreateInfo createInfo = {};
   createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-
   createInfo.queueCreateInfoCount =
       static_cast<uint32_t>(queueCreateInfos.size());
   createInfo.pQueueCreateInfos = queueCreateInfos.data();
-
   createInfo.pEnabledFeatures = &deviceFeatures;
   createInfo.enabledExtensionCount =
       static_cast<uint32_t>(deviceExtensions.size());
   createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-  // might not really be necessary anymore because device specific validation
-  // layers have been deprecated
-  if (enableValidationLayers) {
-    createInfo.enabledLayerCount =
-        static_cast<uint32_t>(validationLayers.size());
-    createInfo.ppEnabledLayerNames = validationLayers.data();
-  } else {
-    createInfo.enabledLayerCount = 0;
-  }
-
+  // Attempt to create the logical device
   if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to create logical device!");
   }
 
+  // Retrieve graphics and present queues from the logical device
   vkGetDeviceQueue(device_, indices.graphicsFamily, 0, &graphicsQueue_);
   vkGetDeviceQueue(device_, indices.presentFamily, 0, &presentQueue_);
 }
 
+/**
+ * @brief Creates a Vulkan command pool for the device.
+ *
+ * This function creates a Vulkan command pool based on the graphics queue
+ * family index obtained from the physical device.
+ */
 void MythEngineDevice::createCommandPool() {
+  // Find the queue family indices supported by the physical device
   QueueFamilyIndices queueFamilyIndices = findPhysicalQueueFamilies();
 
+  // Configure the command pool creation information
   VkCommandPoolCreateInfo poolInfo = {};
   poolInfo.sType = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
   poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily;
@@ -337,6 +357,17 @@ bool MythEngineDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) {
   return requiredExtensions.empty();
 }
 
+/**
+ * @brief Finds the queue families supported by the given physical device.
+ *
+ * This function determines the queue families supported by the specified
+ * physical device and returns an object of type QueueFamilyIndices containing
+ * the indices of the graphics and presentation queue families.
+ *
+ * @param device The Vulkan physical device to query for queue families.
+ * @return QueueFamilyIndices An object containing indices of the found queue
+ * families.
+ */
 QueueFamilyIndices
 MythEngineDevice::findQueueFamilies(VkPhysicalDevice device) {
   QueueFamilyIndices indices;
@@ -350,17 +381,22 @@ MythEngineDevice::findQueueFamilies(VkPhysicalDevice device) {
 
   int i = 0;
   for (const auto &queueFamily : queueFamilies) {
+    // Check for graphics queue support
     if (queueFamily.queueCount > 0 &&
         queueFamily.queueFlags & VK_QUEUE_GRAPHICS_BIT) {
       indices.graphicsFamily = i;
       indices.graphicsFamilyHasValue = true;
     }
+
+    // Check for presentation support
     VkBool32 presentSupport = false;
     vkGetPhysicalDeviceSurfaceSupportKHR(device, i, surface_, &presentSupport);
     if (queueFamily.queueCount > 0 && presentSupport) {
       indices.presentFamily = i;
       indices.presentFamilyHasValue = true;
     }
+
+    // Break the loop if both graphics and presentation families are found
     if (indices.isComplete()) {
       break;
     }
