@@ -26,7 +26,21 @@ namespace myth_engine {
  * at the application layer and to facilitate sharing configuration between
  * multiple pipelines.
  */
-struct PipelineConfigInfo {};
+struct PipelineConfigInfo {
+  // Values stating how the different stages of the pipeline will work
+  VkViewport viewport;
+  VkRect2D scissor;
+  VkPipelineViewportStateCreateInfo viewportInfo;
+  VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
+  VkPipelineRasterizationStateCreateInfo rasterizationInfo;
+  VkPipelineMultisampleStateCreateInfo multisampleInfo;
+  VkPipelineColorBlendAttachmentState colorBlendAttachment;
+  VkPipelineColorBlendStateCreateInfo colorBlendInfo;
+  VkPipelineDepthStencilStateCreateInfo depthStencilInfo;
+  VkPipelineLayout pipelineLayout = nullptr;
+  VkRenderPass renderPass = nullptr;
+  uint32_t subpass = 0;
+};
 
 /**
  * @brief Handles the creation and management of a graphics pipeline.
@@ -44,7 +58,7 @@ public:
                const std::string &fragFilepath,
                const PipelineConfigInfo &configInfo);
 
-  ~MythPipeline(){};
+  ~MythPipeline();
 
   // Copy constructor - Disabled to prevent copying of MythPipeline objects
   MythPipeline(const MythPipeline &) = delete;
@@ -81,7 +95,7 @@ private:
   MythEngineDevice &mythEngineDevice;
   VkPipeline graphicsPipeline;
   VkShaderModule vertShaderModule;
-  VkShaderModule fragSHaderModule;
+  VkShaderModule fragShaderModule;
 };
 
 } // namespace myth_engine
