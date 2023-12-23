@@ -8,7 +8,10 @@
 
 namespace myth_engine {
 
-// local callback functions
+/******************************************************************************
+ ************************** VULKAN DEBUG UTILITIES ****************************
+ ******************************************************************************/
+
 static VKAPI_ATTR VkBool32 VKAPI_CALL
 debugCallback(VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity,
               VkDebugUtilsMessageTypeFlagsEXT messageType,
@@ -365,8 +368,7 @@ bool MythEngineDevice::checkDeviceExtensionSupport(VkPhysicalDevice device) {
  * the indices of the graphics and presentation queue families.
  *
  * @param device The Vulkan physical device to query for queue families.
- * @return QueueFamilyIndices An object containing indices of the found queue
- * families.
+ * @return An object containing indices of the found queue families.
  */
 QueueFamilyIndices
 MythEngineDevice::findQueueFamilies(VkPhysicalDevice device) {
@@ -396,7 +398,6 @@ MythEngineDevice::findQueueFamilies(VkPhysicalDevice device) {
       indices.presentFamilyHasValue = true;
     }
 
-    // Break the loop if both graphics and presentation families are found
     if (indices.isComplete()) {
       break;
     }
@@ -467,10 +468,26 @@ uint32_t MythEngineDevice::findMemoryType(uint32_t typeFilter,
   throw std::runtime_error("failed to find suitable memory type!");
 }
 
+/**
+ * @brief Creates a Vulkan buffer and allocates memory for it.
+ *
+ * This function creates a Vulkan buffer based on the provided size, usage
+ * flags, and memory properties. It also allocates memory for the buffer.
+ *
+ * @param size The size of the buffer in bytes.
+ * @param usage Flags specifying the allowed usage of the buffer (e.g., vertex
+ * buffer, index buffer).
+ * @param properties Flags defining the memory properties (e.g., host-visible,
+ * device-local).
+ * @param buffer Reference to a Vulkan buffer object to be created.
+ * @param bufferMemory Reference to Vulkan device memory associated with the
+ * buffer.
+ */
 void MythEngineDevice::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
                                     VkMemoryPropertyFlags properties,
                                     VkBuffer &buffer,
                                     VkDeviceMemory &bufferMemory) {
+  // Configure buffer creation information
   VkBufferCreateInfo bufferInfo{};
   bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
   bufferInfo.size = size;
@@ -484,6 +501,7 @@ void MythEngineDevice::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
   VkMemoryRequirements memRequirements;
   vkGetBufferMemoryRequirements(device_, buffer, &memRequirements);
 
+  // Allocate memory for the buffer
   VkMemoryAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
   allocInfo.allocationSize = memRequirements.size;
@@ -495,6 +513,7 @@ void MythEngineDevice::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
     throw std::runtime_error("failed to allocate vertex buffer memory!");
   }
 
+  // Associate allocated memory with the buffer
   vkBindBufferMemory(device_, buffer, bufferMemory, 0);
 }
 

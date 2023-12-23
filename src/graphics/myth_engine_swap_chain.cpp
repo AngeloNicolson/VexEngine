@@ -70,6 +70,7 @@ VkResult
 MythEngineSwapChain::submitCommandBuffers(const VkCommandBuffer *buffers,
                                           uint32_t *imageIndex) {
   if (imagesInFlight[*imageIndex] != VK_NULL_HANDLE) {
+    // CPU will wait here until GPU signals it to carry on
     vkWaitForFences(device.device(), 1, &imagesInFlight[*imageIndex], VK_TRUE,
                     UINT64_MAX);
   }
