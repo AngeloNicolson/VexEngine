@@ -4,6 +4,7 @@
 #include "../graphics/myth_engine_device.hpp"
 #include "../graphics/myth_engine_swap_chain.hpp"
 #include "../graphics/myth_pipeline.hpp"
+#include "../graphics/myth_vertex_buffer_manager.hpp"
 #include "../graphics/myth_window.hpp"
 #include <vulkan/vulkan_core.h>
 
@@ -26,6 +27,7 @@ public:
   Engine &operator=(const Engine &) = delete;
 
 private:
+  void loadModels();
   void createPipelineLayout();
   void createPipeline();
   void createCommandBuffers();
@@ -38,6 +40,7 @@ private:
   VkPipelineLayout pipelineLayout;
 
   std::vector<VkCommandBuffer> commandBuffers;
+  std::unique_ptr<MythVertexBufferManager> mythVertexbuffer;
 };
 
 } // namespace myth_engine

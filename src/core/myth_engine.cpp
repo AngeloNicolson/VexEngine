@@ -1,5 +1,6 @@
 #include "myth_engine.hpp"
 #include <cstdint>
+#include <memory>
 #include <vulkan/vulkan_core.h>
 
 // STD
@@ -9,6 +10,7 @@
 namespace myth_engine {
 
 Engine::Engine() {
+  loadModels();
   createPipelineLayout();
   createPipeline();
   createCommandBuffers();
@@ -27,6 +29,16 @@ void Engine::run() {
 
   // Waits untill all gpu operations have completed.
   vkDeviceWaitIdle(mythDevice.device());
+}
+
+void Engine::loadModels() {
+  std::vector<MythVertexBufferManager::Vertex> vertices{
+      {{0.0f, -0.5f}},
+      {{0.5f, 0.5f}},
+      {{-0.5f, 0.5f}},
+  };
+  mythVertexbuffer =
+      std::make_unique<MythVertexBufferManager>(mythDevice, vertices);
 }
 
 void Engine::createPipelineLayout() {
@@ -107,7 +119,7 @@ void Engine::createCommandBuffers() {
                          VK_SUBPASS_CONTENTS_INLINE);
 
     mythPipeline->bind(commandBuffers[i]);
-    vkCmdDraw(commandBuffers[i], 3, 1, 0, 0);
+    mythVertexbuffer->bind(commandBuffers[i]);
 
     vkCmdEndRenderPass(commandBuffers[i]);
     if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {

@@ -188,7 +188,6 @@ void MythEngineDevice::createLogicalDevice() {
       static_cast<uint32_t>(deviceExtensions.size());
   createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-  // Attempt to create the logical device
   if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device_) !=
       VK_SUCCESS) {
     throw std::runtime_error("failed to create logical device!");
@@ -479,9 +478,9 @@ uint32_t MythEngineDevice::findMemoryType(uint32_t typeFilter,
  * buffer, index buffer).
  * @param properties Flags defining the memory properties (e.g., host-visible,
  * device-local).
- * @param buffer Reference to a Vulkan buffer object to be created.
- * @param bufferMemory Reference to Vulkan device memory associated with the
- * buffer.
+ * @param buffer Returns a Reference to a Vulkan buffer object to be created.
+ * @param bufferMemory Returns a Reference to Vulkan device memory associated
+ * with the buffer.
  */
 void MythEngineDevice::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
                                     VkMemoryPropertyFlags properties,
@@ -497,11 +496,11 @@ void MythEngineDevice::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage,
   if (vkCreateBuffer(device_, &bufferInfo, nullptr, &buffer) != VK_SUCCESS) {
     throw std::runtime_error("failed to create vertex buffer!");
   }
-
+  // Querry the buffer memory requirments
   VkMemoryRequirements memRequirements;
   vkGetBufferMemoryRequirements(device_, buffer, &memRequirements);
 
-  // Allocate memory for the buffer
+  // Allocate memory for the buffer based on the
   VkMemoryAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
   allocInfo.allocationSize = memRequirements.size;

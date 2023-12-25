@@ -1,4 +1,5 @@
 #include "myth_pipeline.hpp"
+#include "myth_vertex_buffer_manager.hpp"
 
 // STD
 #include <cassert>
@@ -85,13 +86,19 @@ void MythPipeline::createGraphicsPipeline(
   shaderStages[1].pSpecializationInfo = nullptr;
 
   // How vertex data is interpreted. Is the initial input into graphics pipeline
+  auto bindingDescriptions =
+      MythVertexBufferManager::Vertex::getBindingDescriptions();
+  auto attributeDescriptions =
+      MythVertexBufferManager::Vertex::getAttributeDescriptions();
   VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
   vertexInputInfo.sType =
       VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-  vertexInputInfo.vertexAttributeDescriptionCount = 0;
-  vertexInputInfo.vertexBindingDescriptionCount = 0;
-  vertexInputInfo.pVertexAttributeDescriptions = nullptr;
-  vertexInputInfo.pVertexBindingDescriptions = nullptr;
+  vertexInputInfo.vertexAttributeDescriptionCount =
+      static_cast<uint32_t>(attributeDescriptions.size());
+  vertexInputInfo.vertexBindingDescriptionCount =
+      static_cast<uint32_t>(bindingDescriptions.size());
+  vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+  vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
   VkPipelineViewportStateCreateInfo viewportInfo{};
   // Only enabling one viewport and scissor for now.

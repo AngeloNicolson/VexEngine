@@ -50,7 +50,7 @@ public:
 
   // Not copyable or movable
   MythEngineDevice(const MythEngineDevice &) = delete;
-  void operator=(const MythEngineDevice &) = delete;
+  MythEngineDevice &operator=(const MythEngineDevice &) = delete;
   MythEngineDevice(MythEngineDevice &&) = delete;
   MythEngineDevice &operator=(MythEngineDevice &&) = delete;
 
