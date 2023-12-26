@@ -24,7 +24,9 @@ class MythVertexBufferManager {
 public:
   struct Vertex {
 
+    // Interleaving position and color
     glm::vec2 position;
+    glm::vec3 color;
 
     static std::vector<VkVertexInputBindingDescription>
     getBindingDescriptions();
