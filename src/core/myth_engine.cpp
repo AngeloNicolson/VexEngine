@@ -5,6 +5,7 @@
 
 // STD
 #include <array>
+#include <iostream>
 #include <stdexcept>
 
 namespace myth_engine {
@@ -33,11 +34,12 @@ void Engine::run() {
 
 void Engine::loadModels() {
   std::vector<MythVertexBufferManager::Vertex> vertices{
-      {{0.0f, -0.5f}},
-      {{0.5f, 0.5f}},
-      {{-0.5f, 0.5f}},
-  };
-  mythVertexbuffer =
+      {{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
+  for (const auto &vertex : vertices) {
+    std::cout << "Vertex Position: (" << vertex.position.x << ", "
+              << vertex.position.y << ")" << std::endl;
+  }
+  mythVertexBuffer =
       std::make_unique<MythVertexBufferManager>(mythDevice, vertices);
 }
 
@@ -118,8 +120,14 @@ void Engine::createCommandBuffers() {
     vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo,
                          VK_SUBPASS_CONTENTS_INLINE);
 
+    // Binding the Graphics pipeline
     mythPipeline->bind(commandBuffers[i]);
-    mythVertexbuffer->bind(commandBuffers[i]);
+
+    // Binding the Vertex Buffer
+    mythVertexBuffer->bind(commandBuffers[i]);
+
+    // Issue a draw command using the bound vertex buffer
+    mythVertexBuffer->draw(commandBuffers[i]);
 
     vkCmdEndRenderPass(commandBuffers[i]);
     if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {

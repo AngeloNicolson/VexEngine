@@ -40,7 +40,7 @@ private:
   VkPipelineLayout pipelineLayout;
 
   std::vector<VkCommandBuffer> commandBuffers;
-  std::unique_ptr<MythVertexBufferManager> mythVertexbuffer;
+  std::unique_ptr<MythVertexBufferManager> mythVertexBuffer;
 };
 
 } // namespace myth_engine

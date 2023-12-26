@@ -10,21 +10,25 @@
 #define MYTH_VERTEX_BUFFER_MANAGER_H
 
 #include "myth_engine_device.hpp"
-#include <vector>
-#include <vulkan/vulkan_core.h>
 
+// libs
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+
+// std
+#include <vector>
 
 namespace myth_engine {
 class MythVertexBufferManager {
 public:
   struct Vertex {
+
     glm::vec2 position;
 
     static std::vector<VkVertexInputBindingDescription>
     getBindingDescriptions();
+
     static std::vector<VkVertexInputAttributeDescription>
     getAttributeDescriptions();
   };
@@ -33,7 +37,6 @@ public:
                           const std::vector<Vertex> &vertices);
   ~MythVertexBufferManager();
 
-  // make sure that object cannot be copied or allocated
   MythVertexBufferManager(const MythVertexBufferManager &) = delete;
   MythVertexBufferManager &operator=(const MythVertexBufferManager &) = delete;
 
