@@ -34,11 +34,13 @@ void Engine::run() {
 
 void Engine::loadModels() {
   std::vector<MythVertexBufferManager::Vertex> vertices{
-      {{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
-  for (const auto &vertex : vertices) {
-    std::cout << "Vertex Position: (" << vertex.position.x << ", "
-              << vertex.position.y << ")" << std::endl;
-  }
+      {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
+      {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
+      {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
+  // for (const auto &vertex : vertices) {
+  //   std::cout << "Vertex Position: (" << vertex.position.x << ", "
+  //             << vertex.position.y << ")" << std::endl;
+  // }
   mythVertexBuffer =
       std::make_unique<MythVertexBufferManager>(mythDevice, vertices);
 }
