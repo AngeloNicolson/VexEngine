@@ -2,6 +2,7 @@
 #include <GLFW/glfw3.h>
 #include <cstdint>
 #include <memory>
+#include <utility>
 #include <vulkan/vulkan_core.h>
 
 // STD
@@ -60,8 +61,13 @@ void Engine::createPipelineLayout() {
 }
 
 void Engine::createPipeline() {
-  auto pipelineConfig = MythPipeline::defaultPipelineConfigInfo(
-      mythEngineSwapChain->width(), mythEngineSwapChain->height());
+  assert(mythEngineSwapChain != nullptr &&
+         "Cannot create pipeline before swap chain");
+  assert(pipelineLayout != nullptr &&
+         "Cannot create pipeline before pipeline layout");
+
+  PipelineConfigInfo pipelineConfig{};
+  MythPipeline::defaultPipelineConfigInfo(pipelineConfig);
   pipelineConfig.renderPass = mythEngineSwapChain->getRenderPass();
   pipelineConfig.pipelineLayout = pipelineLayout;
 
@@ -78,8 +84,18 @@ void Engine::recreateSwapChain() {
     glfwWaitEvents();
   }
   vkDeviceWaitIdle(mythDevice.device());
-  mythEngineSwapChain =
-      std::make_unique<MythEngineSwapChain>(mythDevice, windowBounds);
+  if (mythEngineSwapChain == nullptr) {
+    mythEngineSwapChain =
+        std::make_unique<MythEngineSwapChain>(mythDevice, windowBounds);
+
+  } else {
+    mythEngineSwapChain = std::make_unique<MythEngineSwapChain>(
+        mythDevice, windowBounds, std::move(mythEngineSwapChain));
+    freeCommandBuffers();
+    createCommandBuffers();
+  }
+
+  // If renderPass compatible do nothing else.
   createPipeline();
 }
 
@@ -108,8 +124,14 @@ void Engine::createCommandBuffers() {
   };
 };
 
-void Engine::recordCommandBuffer(int imageIndex) {
+void Engine::freeCommandBuffers() {
+  vkFreeCommandBuffers(mythDevice.device(), mythDevice.getCommandPool(),
+                       static_cast<uint32_t>(commandBuffers.size()),
+                       commandBuffers.data());
+  commandBuffers.clear();
+}
 
+void Engine::recordCommandBuffer(int imageIndex) {
   VkCommandBufferBeginInfo beginInfo{};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -136,6 +158,19 @@ void Engine::recordCommandBuffer(int imageIndex) {
   // Record to command buffer (Begins render pass)
   vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo,
                        VK_SUBPASS_CONTENTS_INLINE);
+
+  VkViewport viewport{};
+  viewport.x = 0.0f;
+  viewport.y = 0.0f;
+  viewport.width =
+      static_cast<float>(mythEngineSwapChain->getSwapChainExtent().width);
+  viewport.height =
+      static_cast<float>(mythEngineSwapChain->getSwapChainExtent().height);
+  viewport.minDepth = 0.0f;
+  viewport.maxDepth = 1.0f;
+  VkRect2D scissor{{0, 0}, mythEngineSwapChain->getSwapChainExtent()};
+  vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
+  vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
   // Binding the Graphics pipeline
   mythPipeline->bind(commandBuffers[imageIndex]);

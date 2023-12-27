@@ -6,14 +6,29 @@
 #include <cstring>
 #include <iostream>
 #include <limits>
-#include <set>
+#include <memory>
 #include <stdexcept>
+#include <vulkan/vulkan_core.h>
 
 namespace myth_engine {
 
 MythEngineSwapChain::MythEngineSwapChain(MythEngineDevice &deviceRef,
                                          VkExtent2D extent)
     : device{deviceRef}, windowExtent{extent} {
+  init();
+}
+
+MythEngineSwapChain::MythEngineSwapChain(
+    MythEngineDevice &deviceRef, VkExtent2D extent,
+    std::shared_ptr<MythEngineSwapChain> previous)
+    : device{deviceRef}, windowExtent{extent}, oldSwapChain{previous} {
+  init();
+
+  // Cleanup the old swap chain when its no longer needed.
+  oldSwapChain = nullptr;
+}
+
+void MythEngineSwapChain::init() {
   createSwapChain();
   createImageViews();
   createRenderPass();
@@ -164,7 +179,8 @@ void MythEngineSwapChain::createSwapChain() {
   createInfo.presentMode = presentMode;
   createInfo.clipped = VK_TRUE;
 
-  createInfo.oldSwapchain = VK_NULL_HANDLE;
+  createInfo.oldSwapchain =
+      oldSwapChain == nullptr ? VK_NULL_HANDLE : oldSwapChain->swapChain;
 
   if (vkCreateSwapchainKHR(device.device(), &createInfo, nullptr, &swapChain) !=
       VK_SUCCESS) {
