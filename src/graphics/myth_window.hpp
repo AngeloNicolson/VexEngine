@@ -13,24 +13,28 @@ public:
   MythWindow(int w, int h, std::string name);
   ~MythWindow();
 
-  bool shouldClose() { return glfwWindowShouldClose(window); };
-
+  bool shouldClose() { return glfwWindowShouldClose(window); }
   VkExtent2D getExtent() {
-    return {static_cast<uint32_t>(WIDTH), static_cast<uint32_t>(HEIGHT)};
+    return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)};
   }
+  bool wasWindowResized() { return frameBufferResized; }
+  void resetWindowResizedFlag() { frameBufferResized = false; };
 
   void createWindowSurface(VkInstance instance, VkSurfaceKHR *surface);
 
 private:
-  const int WIDTH;
-  const int HEIGHT;
+  int width;
+  int height;
+  bool frameBufferResized = false;
+
+  static void framebufferResizeCallback(GLFWwindow *window, int width,
+                                        int height);
+  void initWindow();
 
   // Copy constructor - Disabled to prevent copying of MythWindow objects
   MythWindow(const MythWindow &) = delete;
   // Deleted copy assignment operator - Prevents assignment of MythWindow
   MythWindow &operator=(const MythWindow &) = delete;
-
-  void initWindow();
 
   std::string windowName;
   GLFWwindow *window;

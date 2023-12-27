@@ -59,10 +59,9 @@ public:
 
   ~MythPipeline();
 
-  // Copy constructor - Disabled to prevent copying of MythPipeline objects
+  // Copy constructor and assignment operator disabled
   MythPipeline(const MythPipeline &) = delete;
-  // Deleted copy assignment operator - Prevents assignment of MythPipeline
-  void operator=(const MythPipeline &) = delete;
+  MythPipeline &operator=(const MythPipeline &) = delete;
 
   /**
    * @brief Binds a Vulkan command buffer.

@@ -7,7 +7,7 @@
 namespace myth_engine {
 
 MythWindow::MythWindow(int w, int h, std::string name)
-    : WIDTH{w}, HEIGHT{h}, windowName{name} {
+    : width{w}, height{h}, windowName{name} {
 
   initWindow();
 }
@@ -21,12 +21,14 @@ void MythWindow::initWindow() {
   glfwInit();
   glfwWindowHint(GLFW_CLIENT_API,
                  GLFW_NO_API); // Disables OpenGL context as we are using Vulkan
-  glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); // Dissable window resize
+  glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
   // glfwCreateWindow is expecting a c style string so windowName needs to be
   // converted from a std::string to a c_str (C style string)
   window =
-      glfwCreateWindow(WIDTH, HEIGHT, windowName.c_str(), nullptr, nullptr);
+      glfwCreateWindow(width, height, windowName.c_str(), nullptr, nullptr);
+  glfwSetWindowUserPointer(window, this);
+  glfwSetFramebufferSizeCallback(window, framebufferResizeCallback);
 }
 void MythWindow::createWindowSurface(VkInstance instance,
                                      VkSurfaceKHR *surface) {
@@ -36,4 +38,15 @@ void MythWindow::createWindowSurface(VkInstance instance,
     throw std::runtime_error("Surface failed to create window surface");
   }
 }
+
+void MythWindow::framebufferResizeCallback(GLFWwindow *window, int width,
+                                           int height) {
+  auto mythWindow =
+      reinterpret_cast<MythWindow *>(glfwGetWindowUserPointer(window));
+
+  mythWindow->frameBufferResized = true;
+  mythWindow->width = width;
+  mythWindow->height = height;
+}
+
 } // namespace myth_engine

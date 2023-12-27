@@ -1,4 +1,5 @@
 #include "myth_engine.hpp"
+#include <GLFW/glfw3.h>
 #include <cstdint>
 #include <memory>
 #include <vulkan/vulkan_core.h>
@@ -13,7 +14,7 @@ namespace myth_engine {
 Engine::Engine() {
   loadModels();
   createPipelineLayout();
-  createPipeline();
+  recreateSwapChain();
   createCommandBuffers();
 }
 
@@ -60,8 +61,8 @@ void Engine::createPipelineLayout() {
 
 void Engine::createPipeline() {
   auto pipelineConfig = MythPipeline::defaultPipelineConfigInfo(
-      mythEngineSwapChain.width(), mythEngineSwapChain.height());
-  pipelineConfig.renderPass = mythEngineSwapChain.getRenderPass();
+      mythEngineSwapChain->width(), mythEngineSwapChain->height());
+  pipelineConfig.renderPass = mythEngineSwapChain->getRenderPass();
   pipelineConfig.pipelineLayout = pipelineLayout;
 
   mythPipeline = std::make_unique<MythPipeline>(
@@ -69,10 +70,21 @@ void Engine::createPipeline() {
       "graphics/shaders/simple_shader.frag.spv", pipelineConfig);
 }
 
+// Re create swap chain if window size has changed
+void Engine::recreateSwapChain() {
+  auto windowBounds = mythWindow.getExtent();
+  while (windowBounds.width == 0 || windowBounds.height == 0) {
+    windowBounds = mythWindow.getExtent();
+    glfwWaitEvents();
+  }
+  vkDeviceWaitIdle(mythDevice.device());
+  mythEngineSwapChain =
+      std::make_unique<MythEngineSwapChain>(mythDevice, windowBounds);
+  createPipeline();
+}
+
 void Engine::createCommandBuffers() {
-
-  commandBuffers.resize(mythEngineSwapChain.imageCount());
-
+  commandBuffers.resize(mythEngineSwapChain->imageCount());
   VkCommandBufferAllocateInfo allocInfo{};
   allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 
@@ -94,59 +106,83 @@ void Engine::createCommandBuffers() {
                                commandBuffers.data()) != VK_SUCCESS) {
     throw std::runtime_error("Failed to allocate command buffers!");
   };
-
-  for (int i = 0; i < commandBuffers.size(); i++) {
-    VkCommandBufferBeginInfo beginInfo{};
-    beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-    if (vkBeginCommandBuffer(commandBuffers[i], &beginInfo) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to begin recording command buffer!");
-    }
-
-    VkRenderPassBeginInfo renderPassInfo{};
-    renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-    renderPassInfo.renderPass = mythEngineSwapChain.getRenderPass();
-    renderPassInfo.framebuffer = mythEngineSwapChain.getFrameBuffer(i);
-
-    renderPassInfo.renderArea.offset = {0, 0};
-    renderPassInfo.renderArea.extent = mythEngineSwapChain.getSwapChainExtent();
-
-    std::array<VkClearValue, 2> clearValues{};
-    clearValues[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
-    clearValues[1].depthStencil = {1.0f, 0};
-
-    renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
-    renderPassInfo.pClearValues = clearValues.data();
-
-    // Record to command buffer (Begins render pass)
-    vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo,
-                         VK_SUBPASS_CONTENTS_INLINE);
-
-    // Binding the Graphics pipeline
-    mythPipeline->bind(commandBuffers[i]);
-
-    // Binding the Vertex Buffer
-    mythVertexBuffer->bind(commandBuffers[i]);
-
-    // Issue a draw command using the bound vertex buffer
-    mythVertexBuffer->draw(commandBuffers[i]);
-
-    vkCmdEndRenderPass(commandBuffers[i]);
-    if (vkEndCommandBuffer(commandBuffers[i]) != VK_SUCCESS) {
-      throw std::runtime_error("Failed to record command buffer!");
-    }
-  }
 };
+
+void Engine::recordCommandBuffer(int imageIndex) {
+
+  VkCommandBufferBeginInfo beginInfo{};
+  beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+  if (vkBeginCommandBuffer(commandBuffers[imageIndex], &beginInfo) !=
+      VK_SUCCESS) {
+    throw std::runtime_error("Failed to begin recording command buffer!");
+  }
+
+  VkRenderPassBeginInfo renderPassInfo{};
+  renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+  renderPassInfo.renderPass = mythEngineSwapChain->getRenderPass();
+  renderPassInfo.framebuffer = mythEngineSwapChain->getFrameBuffer(imageIndex);
+
+  renderPassInfo.renderArea.offset = {0, 0};
+  renderPassInfo.renderArea.extent = mythEngineSwapChain->getSwapChainExtent();
+
+  std::array<VkClearValue, 2> clearValues{};
+  clearValues[0].color = {0.1f, 0.1f, 0.1f, 1.0f};
+  clearValues[1].depthStencil = {1.0f, 0};
+
+  renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+  renderPassInfo.pClearValues = clearValues.data();
+
+  // Record to command buffer (Begins render pass)
+  vkCmdBeginRenderPass(commandBuffers[imageIndex], &renderPassInfo,
+                       VK_SUBPASS_CONTENTS_INLINE);
+
+  // Binding the Graphics pipeline
+  mythPipeline->bind(commandBuffers[imageIndex]);
+
+  // Binding the Vertex Buffer
+  mythVertexBuffer->bind(commandBuffers[imageIndex]);
+
+  // Issue a draw command using the bound vertex buffer
+  mythVertexBuffer->draw(commandBuffers[imageIndex]);
+
+  vkCmdEndRenderPass(commandBuffers[imageIndex]);
+  if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
+    throw std::runtime_error("Failed to record command buffer!");
+  }
+}
+
+/**
+ * @brief Executes the necessary steps to draw a frame onto the surface.
+ *
+ * This function handles the process of acquiring an image from the swap chain,
+ * submitting command buffers for rendering, and presenting the frame.
+ * If the swap chain needs recreation due to window resizing or other issues, it
+ * triggers the recreation.
+ *
+ **/
 void Engine::drawFrame() {
   uint32_t imageIndex;
-  auto result = mythEngineSwapChain.acquireNextImage(&imageIndex);
+  auto result = mythEngineSwapChain->acquireNextImage(&imageIndex);
 
-  if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
-    throw std::runtime_error("failed to acquire swap chai image!");
+  if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+    recreateSwapChain();
+    return;
   }
 
-  result = mythEngineSwapChain.submitCommandBuffers(&commandBuffers[imageIndex],
-                                                    &imageIndex);
+  if (result != VK_SUCCESS && result != VK_SUBOPTIMAL_KHR) {
+    throw std::runtime_error("failed to acquire swap chain image!");
+  }
+
+  recordCommandBuffer(imageIndex);
+  result = mythEngineSwapChain->submitCommandBuffers(
+      &commandBuffers[imageIndex], &imageIndex);
+  if (result == VK_ERROR_OUT_OF_DATE_KHR || result == VK_SUBOPTIMAL_KHR ||
+      mythWindow.wasWindowResized()) {
+    mythWindow.resetWindowResizedFlag();
+    recreateSwapChain();
+    return;
+  }
 
   if (result != VK_SUCCESS) {
     throw std::runtime_error("failed to present swap chain image!");

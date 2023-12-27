@@ -30,7 +30,7 @@ public:
   ~MythEngineSwapChain();
 
   MythEngineSwapChain(const MythEngineSwapChain &) = delete;
-  void operator=(const MythEngineSwapChain &) = delete;
+  MythEngineSwapChain &operator=(const MythEngineSwapChain &) = delete;
 
   VkFramebuffer getFrameBuffer(int index) {
     return swapChainFramebuffers[index];

@@ -32,10 +32,12 @@ private:
   void createPipeline();
   void createCommandBuffers();
   void drawFrame();
+  void recreateSwapChain();
+  void recordCommandBuffer(int imageIndex);
 
   MythWindow mythWindow{WIDTH, HEIGHT, "Hello Vulkan"};
   MythEngineDevice mythDevice{mythWindow};
-  MythEngineSwapChain mythEngineSwapChain{mythDevice, mythWindow.getExtent()};
+  std::unique_ptr<MythEngineSwapChain> mythEngineSwapChain;
   std::unique_ptr<MythPipeline> mythPipeline;
   VkPipelineLayout pipelineLayout;
 
