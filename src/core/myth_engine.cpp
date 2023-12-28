@@ -1,4 +1,5 @@
 #include "myth_engine.hpp"
+#include "myth_game_object.hpp"
 #include <GLFW/glfw3.h>
 #include <cstdint>
 #include <glm/fwd.hpp>
@@ -10,6 +11,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 // STD
 #include <array>
@@ -19,12 +21,13 @@
 namespace myth_engine {
 
 struct SimplePushConstantData {
+  glm::mat2 transform{1.f};
   glm::vec2 offset;
   alignas(16) glm::vec3 color;
 };
 
 Engine::Engine() {
-  loadModels();
+  loadGameObjects();
   createPipelineLayout();
   recreateSwapChain();
   createCommandBuffers();
@@ -49,17 +52,40 @@ void Engine::run() {
   vkDeviceWaitIdle(mythDevice.device());
 }
 
-void Engine::loadModels() {
+void Engine::loadGameObjects() {
   std::vector<MythVertexBufferManager::Vertex> vertices{
-      {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-      {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}},
-      {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
+
+      {{0.0f, -2.0f}, {1.0f, 0.0f, 0.0f}},
+      {{-0.01, 0.0f}, {0.0f, 1.0f, 0.0f}},
+      {{0.1f, -1.0f}, {0.0f, 0.0f, 1.0f}},
+      {{0.0f, 2.0f}, {0.0f, 1.0f, 0.0f}},
+      {{0.01f, -0.0f}, {0.0f, 0.0f, 1.0f}},
+      {{-0.1f, 1.0f}, {1.0f, 0.0f, 0.0f}}};
   // for (const auto &vertex : vertices) {
   //   std::cout << "Vertex Position: (" << vertex.position.x << ", "
   //             << vertex.position.y << ")" << std::endl;
   // }
-  mythVertexBuffer =
-      std::make_unique<MythVertexBufferManager>(mythDevice, vertices);
+  auto mythVertexBuffer =
+      std::make_shared<MythVertexBufferManager>(mythDevice, vertices);
+
+  std::vector<glm::vec3> colors{
+      {1.0f, 0.1f, 0.0f},
+      {1.0f, 0.2f, 0.0f},
+      {1.0f, 0.3f, 0.0f},
+      {1.0f, 0.4f, 0.0f},
+      {1.0f, 0.5f, 0.0f} //
+  };
+  for (auto &color : colors) {
+    color = glm::pow(color, glm::vec3{2.2f});
+  }
+  for (int i = 0; i < 100; i++) {
+    auto triangle = MythGameObject::createGameObject();
+    triangle.model = mythVertexBuffer;
+    triangle.transform2d.scale = glm::vec2(.4f) + i * 0.015f;
+    triangle.transform2d.rotation = i * glm::pi<float>() * .015f;
+    triangle.color = colors[i % colors.size()];
+    gameObjects.push_back(std::move(triangle));
+  }
 }
 
 void Engine::createPipelineLayout() {
@@ -155,9 +181,6 @@ void Engine::freeCommandBuffers() {
 }
 
 void Engine::recordCommandBuffer(int imageIndex) {
-  static int frame = 0;
-  frame = (frame + 1) % 1000;
-
   VkCommandBufferBeginInfo beginInfo{};
   beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -198,31 +221,38 @@ void Engine::recordCommandBuffer(int imageIndex) {
   vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
   vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
-  // Binding the Graphics pipeline
-  mythPipeline->bind(commandBuffers[imageIndex]);
-
-  // Binding the Vertex Buffer
-  mythVertexBuffer->bind(commandBuffers[imageIndex]);
-
-  for (int j = 0; j < 4; j++) {
-    SimplePushConstantData push{};
-    push.offset = {-0.5f + frame * 0.002f, -0.4f + j * 0.25f};
-    push.color = {0.0f, 0.0f, 0.2 + 0.2f * j};
-
-    vkCmdPushConstants(commandBuffers[imageIndex], pipelineLayout,
-                       VK_SHADER_STAGE_VERTEX_BIT |
-                           VK_SHADER_STAGE_FRAGMENT_BIT,
-                       0, sizeof(SimplePushConstantData), &push);
-
-    mythVertexBuffer->draw(commandBuffers[imageIndex]);
-  }
-
-  // Issue a draw command using the bound vertex buffer
-  mythVertexBuffer->draw(commandBuffers[imageIndex]);
+  renderGameObjects(commandBuffers[imageIndex]);
 
   vkCmdEndRenderPass(commandBuffers[imageIndex]);
   if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS) {
     throw std::runtime_error("Failed to record command buffer!");
+  }
+}
+
+void Engine::renderGameObjects(VkCommandBuffer commandBuffer) {
+  mythPipeline->bind(commandBuffer);
+
+  for (auto &obj : gameObjects) {
+    int i = 0;
+    for (auto &obj : gameObjects) {
+      i += 1;
+      obj.transform2d.rotation =
+          glm::mod<float>(obj.transform2d.rotation + 0.000001f * i,
+                          1.0f * glm::two_pi<float>());
+    }
+
+    SimplePushConstantData push{};
+    push.offset = obj.transform2d.translation;
+    push.color = obj.color;
+    push.transform = obj.transform2d.mat2();
+
+    vkCmdPushConstants(commandBuffer, pipelineLayout,
+                       VK_SHADER_STAGE_VERTEX_BIT |
+                           VK_SHADER_STAGE_FRAGMENT_BIT,
+                       0, sizeof(SimplePushConstantData), &push);
+
+    obj.model->bind(commandBuffer);
+    obj.model->draw(commandBuffer);
   }
 }
 

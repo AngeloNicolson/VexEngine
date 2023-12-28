@@ -4,8 +4,8 @@
 #include "../graphics/myth_engine_device.hpp"
 #include "../graphics/myth_engine_swap_chain.hpp"
 #include "../graphics/myth_pipeline.hpp"
-#include "../graphics/myth_vertex_buffer_manager.hpp"
 #include "../graphics/myth_window.hpp"
+#include "myth_game_object.hpp"
 #include <vulkan/vulkan_core.h>
 
 // STD
@@ -27,7 +27,7 @@ public:
   Engine &operator=(const Engine &) = delete;
 
 private:
-  void loadModels();
+  void loadGameObjects();
   void createPipelineLayout();
   void createPipeline();
   void createCommandBuffers();
@@ -35,6 +35,7 @@ private:
   void drawFrame();
   void recreateSwapChain();
   void recordCommandBuffer(int imageIndex);
+  void renderGameObjects(VkCommandBuffer commandBuffer);
 
   MythWindow mythWindow{WIDTH, HEIGHT, "Hello Vulkan"};
   MythEngineDevice mythDevice{mythWindow};
@@ -43,7 +44,7 @@ private:
   VkPipelineLayout pipelineLayout;
 
   std::vector<VkCommandBuffer> commandBuffers;
-  std::unique_ptr<MythVertexBufferManager> mythVertexBuffer;
+  std::vector<MythGameObject> gameObjects;
 };
 
 } // namespace myth_engine
