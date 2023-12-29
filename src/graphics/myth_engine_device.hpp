@@ -6,12 +6,11 @@
 // related resources.
 //
 //===----------------------------------------------------------------------===//
-#pragma once
-
+#ifndef MYTH_WINDOW_H
+#define MYTH_WINDOW_H
 #include "myth_window.hpp"
 
 // std lib headers
-#include <string>
 #include <vector>
 
 namespace myth_engine {
@@ -129,3 +128,4 @@ private:
 };
 
 } // namespace myth_engine
+#endif

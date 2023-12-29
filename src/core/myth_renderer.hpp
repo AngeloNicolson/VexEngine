@@ -1,5 +1,16 @@
-#ifndef MYTH_ENGINE_H
-#define MYTH_ENGINE_H
+//===-- myth_renderer.h ---------------------------------------------------===//
+//
+// Part of the Myth Engine.
+//
+//===----------------------------------------------------------------------===//
+//
+// This file declares the MythRenderer class, responsible for managing
+// Vulkan rendering operations including frame handling, command buffer
+// management, and swap chain operations.
+//
+//===----------------------------------------------------------------------===//
+#ifndef MYTH_RENDERER_H
+#define MYTH_RENDERER_H
 
 #include "../graphics/myth_engine_device.hpp"
 #include "../graphics/myth_engine_swap_chain.hpp"
@@ -11,44 +22,68 @@
 #include <memory>
 #include <vector>
 
-namespace myth_engine {
-class MythRenderer {
+namespace myth_engine
+{
+class MythRenderer
+{
 
-public:
-  MythRenderer(MythWindow &window, MythEngineDevice &device);
-  ~MythRenderer();
+  public:
+    MythRenderer(MythWindow &window, MythEngineDevice &device);
+    ~MythRenderer();
 
-  MythRenderer(const MythRenderer &) = delete;
-  MythRenderer &operator=(const MythRenderer &) = delete;
+    // Deleting copy and assignment constructors
+    MythRenderer(const MythRenderer &) = delete;
+    MythRenderer &operator=(const MythRenderer &) = delete;
 
-  VkRenderPass getSwapChainRenderPass() const {
-    return mythEngineSwapChain->getRenderPass();
-  }
-  bool isFrameInProgress() const { return isFrameStarted; }
+    /**
+     * @brief Retrieves the render pass associated with the current swap chain.
+     *
+     * @return VkRenderPass The render pass.
+     */
+    VkRenderPass getSwapChainRenderPass() const
+    {
+        return mythEngineSwapChain->getRenderPass();
+    }
+    bool isFrameInProgress() const
+    {
+        return isFrameStarted;
+    }
 
-  VkCommandBuffer getCurrentCommandBuffer() const {
-    assert(isFrameStarted &&
-           "Cannot get command buffer when frame not in progress");
-    return commandBuffers[currentImageIndex];
-  }
+    /**
+     * @brief Retrieves the current command buffer for rendering.
+     *
+     * @return The current command buffer.
+     */
+    VkCommandBuffer getCurrentCommandBuffer() const
+    {
+        assert(isFrameStarted && "Cannot get command buffer when frame not in progress");
+        return commandBuffers[currentFrameIndex];
+    }
 
-  VkCommandBuffer beginFrame();
-  void endFrame();
-  void beginSwapChainRenderPass(VkCommandBuffer commandbuffer);
-  void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
+    int getFrameIndex() const
+    {
+        assert(isFrameStarted && "Cannot get frame index when frame is not in progress");
+        return currentFrameIndex;
+    }
 
-private:
-  void createCommandBuffers();
-  void freeCommandBuffers();
-  void recreateSwapChain();
+    VkCommandBuffer beginFrame();
+    void endFrame();
+    void beginSwapChainRenderPass(VkCommandBuffer commandBuffer);
+    void endSwapChainRenderPass(VkCommandBuffer commandBuffer);
 
-  MythWindow &mythWindow;
-  MythEngineDevice mythDevice;
-  std::unique_ptr<MythEngineSwapChain> mythEngineSwapChain;
-  std::vector<VkCommandBuffer> commandBuffers;
+  private:
+    void createCommandBuffers();
+    void freeCommandBuffers();
+    void recreateSwapChain();
 
-  uint32_t currentImageIndex; // Track state of frame that is in progress
-  bool isFrameStarted = false;
+    MythWindow &mythWindow;
+    MythEngineDevice &mythDevice;
+    std::unique_ptr<MythEngineSwapChain> mythEngineSwapChain;
+    std::vector<VkCommandBuffer> commandBuffers;
+
+    uint32_t currentImageIndex; // Track state of frame that is in progress
+    int currentFrameIndex{0};   // Track current frame 0 to MAX_FRAMES_IN_FLIGHT
+    bool isFrameStarted{false};
 };
 
 } // namespace myth_engine
