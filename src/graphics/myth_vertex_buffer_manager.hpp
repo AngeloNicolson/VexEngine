@@ -19,39 +19,39 @@
 // std
 #include <vector>
 
-namespace myth_engine {
-class MythVertexBufferManager {
-public:
-  struct Vertex {
+namespace myth_engine
+{
+class MythVertexBufferManager
+{
+  public:
+    struct Vertex
+    {
 
-    // Interleaving position and color
-    glm::vec2 position;
-    glm::vec3 color;
+        // Interleaving position and color
+        glm::vec3 position;
+        glm::vec3 color;
 
-    static std::vector<VkVertexInputBindingDescription>
-    getBindingDescriptions();
+        static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
 
-    static std::vector<VkVertexInputAttributeDescription>
-    getAttributeDescriptions();
-  };
+        static std::vector<VkVertexInputAttributeDescription> getAttributeDescriptions();
+    };
 
-  MythVertexBufferManager(MythEngineDevice &device,
-                          const std::vector<Vertex> &vertices);
-  ~MythVertexBufferManager();
+    MythVertexBufferManager(MythEngineDevice &device, const std::vector<Vertex> &vertices);
+    ~MythVertexBufferManager();
 
-  MythVertexBufferManager(const MythVertexBufferManager &) = delete;
-  MythVertexBufferManager &operator=(const MythVertexBufferManager &) = delete;
+    MythVertexBufferManager(const MythVertexBufferManager &) = delete;
+    MythVertexBufferManager &operator=(const MythVertexBufferManager &) = delete;
 
-  void bind(VkCommandBuffer commandBuffer);
-  void draw(VkCommandBuffer commandBuffer);
+    void bind(VkCommandBuffer commandBuffer);
+    void draw(VkCommandBuffer commandBuffer);
 
-private:
-  void createVertexBuffers(const std::vector<Vertex> &vertices);
+  private:
+    void createVertexBuffers(const std::vector<Vertex> &vertices);
 
-  MythEngineDevice &mythDevice;
-  VkBuffer vertexBuffer;
-  VkDeviceMemory vertexBufferMemory;
-  uint32_t vertexCount;
+    MythEngineDevice &mythDevice;
+    VkBuffer vertexBuffer;
+    VkDeviceMemory vertexBufferMemory;
+    uint32_t vertexCount;
 };
 
 } // namespace myth_engine

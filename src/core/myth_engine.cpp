@@ -46,34 +46,76 @@ void Engine::run()
     vkDeviceWaitIdle(mythDevice.device());
 }
 
-void Engine::loadGameObjects()
+// temporary helper function, creates a 1x1x1 cube centered at offset
+std::unique_ptr<MythVertexBufferManager> createCubeModel(MythEngineDevice &device, glm::vec3 offset)
 {
     std::vector<MythVertexBufferManager::Vertex> vertices{
 
-        {{0.0f, -2.0f}, {1.0f, 0.0f, 0.0f}}, {{-0.01, 0.0f}, {0.0f, 1.0f, 0.0f}},  {{0.1f, -1.0f}, {0.0f, 0.0f, 1.0f}},
-        {{0.0f, 2.0f}, {0.0f, 1.0f, 0.0f}},  {{0.01f, -0.0f}, {0.0f, 0.0f, 1.0f}}, {{-0.1f, 1.0f}, {1.0f, 0.0f, 0.0f}}};
-    // for (const auto &vertex : vertices) {
-    //   std::cout << "Vertex Position: (" << vertex.position.x << ", "
-    //             << vertex.position.y << ")" << std::endl;
-    // }
-    auto mythVertexBuffer = std::make_shared<MythVertexBufferManager>(mythDevice, vertices);
+        // left face (white)
+        {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+        {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+        {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
+        {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+        {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
+        {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
 
-    std::vector<glm::vec3> colors{
-        {1.0f, 0.1f, 0.0f}, {1.0f, 0.2f, 0.0f}, {1.0f, 0.3f, 0.0f}, {1.0f, 0.4f, 0.0f}, {1.0f, 0.5f, 0.0f} //
+        // right face (yellow)
+        {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+        {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+        {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
+        {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+        {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
+        {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+
+        // top face (orange, remember y axis points down)
+        {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+        {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+        {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+        {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+        {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+        {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+
+        // bottom face (red)
+        {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+        {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+        {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
+        {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+        {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+        {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+
+        // nose face (blue)
+        {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+        {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+        {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+        {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+        {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+        {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+
+        // tail face (green)
+        {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+        {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+        {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+        {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+        {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+        {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+
     };
-    for (auto &color : colors)
+    for (auto &v : vertices)
     {
-        color = glm::pow(color, glm::vec3{2.2f});
+        v.position += offset;
     }
-    for (int i = 0; i < 100; i++)
-    {
-        auto triangle = MythGameObject::createGameObject();
-        triangle.model = mythVertexBuffer;
-        triangle.transform2d.scale = glm::vec2(.4f) + i * 0.015f;
-        triangle.transform2d.rotation = i * glm::pi<float>() * .015f;
-        triangle.color = colors[i % colors.size()];
-        gameObjects.push_back(std::move(triangle));
-    }
+    return std::make_unique<MythVertexBufferManager>(device, vertices);
+}
+
+void Engine::loadGameObjects()
+{
+    std::shared_ptr<MythVertexBufferManager> mythModel = createCubeModel(mythDevice, {0.0f, 0.0f, 0.0f});
+
+    auto cube = MythGameObject::createGameObject();
+    cube.model = mythModel;
+    cube.transform.translation = {0.0f, 0.0f, 0.5f};
+    cube.transform.scale = {0.5f, 0.5f, 0.5f};
+    gameObjects.push_back(std::move(cube));
 }
 
 } // namespace myth_engine

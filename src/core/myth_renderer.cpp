@@ -135,6 +135,7 @@ void MythRenderer::endFrame()
     }
 
     isFrameStarted = false;
+    // Increment Cureent frame index
     currentFrameIndex = (currentFrameIndex + 1) % MythEngineSwapChain::MAX_FRAMES_IN_FLIGHT;
 };
 
