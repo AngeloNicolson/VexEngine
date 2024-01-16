@@ -1,18 +1,19 @@
 CXX = g++
-CXXFLAGS = -std=c++17 -O2
+CXXFLAGS = -std=c++20 -O2
 LDFLAGS = -lglfw -lvulkan -ldl -lpthread -lX11 -lXxf86vm -lXrandr -lXi
 
+BUILD_DIR = ../build
 CORE_DIR = core
 GRAPHICS_DIR = graphics
 
 # List all the source files
 SRCS = $(wildcard $(CORE_DIR)/*.cpp) $(wildcard $(GRAPHICS_DIR)/*.cpp) main.cpp
 
-# Derive object file names from source files
-OBJS = $(SRCS:.cpp=.o)
+# Derive object file names from source files in the build directory
+OBJS = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(notdir $(SRCS)))
 
-# Final executable name
-TARGET = VulkanTest
+# Final executable name in the build directory
+TARGET = $(BUILD_DIR)/VulkanTest
 
 .PHONY: all clean
 
@@ -22,9 +23,18 @@ $(TARGET): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
 # Pattern rule to build .o files from .cpp files
-%.o: %.cpp
+$(BUILD_DIR)/%.o: $(CORE_DIR)/%.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/%.o: $(GRAPHICS_DIR)/%.cpp
+	@mkdir -p $(@D)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+$(BUILD_DIR)/%.o: %.cpp
+	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(OBJS) $(TARGET)
+	rm -rf $(BUILD_DIR)
 

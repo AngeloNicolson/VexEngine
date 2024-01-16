@@ -1,5 +1,7 @@
 #include "myth_engine.hpp"
+
 #include "../graphics/render_system.hpp"
+#include "myth_camera.hpp"
 #include "myth_game_object.hpp"
 
 // libs
@@ -27,16 +29,22 @@ void Engine::run()
 {
     RenderSystem renderSystem{mythDevice, mythRenderer.getSwapChainRenderPass()};
 
+    MythCamera camera{};
+
     // While window is open poll events like clicks etc.
     while (!mythWindow.shouldClose())
     {
         glfwPollEvents();
+        float aspectRatio = mythRenderer.getAspectRatio();
+        // camera.setOrthographicProjection(-aspectRatio, aspectRatio, -1, 1, -1, 1);
+
+        camera.setPerspectiveProjection(glm::radians(50.0f), aspectRatio, 0.1f, 10.0f);
 
         if (auto commandBuffer = mythRenderer.beginFrame())
         {
 
             mythRenderer.beginSwapChainRenderPass(commandBuffer);
-            renderSystem.renderGameObjects(commandBuffer, gameObjects);
+            renderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
             mythRenderer.endSwapChainRenderPass(commandBuffer);
             mythRenderer.endFrame();
         }
@@ -113,7 +121,7 @@ void Engine::loadGameObjects()
 
     auto cube = MythGameObject::createGameObject();
     cube.model = mythModel;
-    cube.transform.translation = {0.0f, 0.0f, 0.5f};
+    cube.transform.translation = {0.0f, 0.0f, 2.5f};
     cube.transform.scale = {0.5f, 0.5f, 0.5f};
     gameObjects.push_back(std::move(cube));
 }

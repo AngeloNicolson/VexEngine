@@ -28,8 +28,8 @@ class MythVertexBufferManager
     {
 
         // Interleaving position and color
-        glm::vec3 position;
-        glm::vec3 color;
+        glm::vec3 position{};
+        glm::vec3 color{};
 
         static std::vector<VkVertexInputBindingDescription> getBindingDescriptions();
 

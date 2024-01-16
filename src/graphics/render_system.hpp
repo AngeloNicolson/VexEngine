@@ -1,6 +1,7 @@
 #ifndef RENDER_SYSTEM_H
 #define RENDER_SYSTEM_H
 
+#include "../core/myth_camera.hpp"
 #include "../core/myth_game_object.hpp"
 #include "myth_engine_device.hpp"
 #include "myth_pipeline.hpp"
@@ -21,7 +22,8 @@ class RenderSystem
     RenderSystem(const RenderSystem &) = delete;
     RenderSystem &operator=(const RenderSystem &) = delete;
 
-    void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<MythGameObject> &gameObjects);
+    void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<MythGameObject> &gameObjects,
+                           const MythCamera &camera);
 
   private:
     void createPipelineLayout();

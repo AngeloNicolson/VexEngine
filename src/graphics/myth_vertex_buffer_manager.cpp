@@ -58,7 +58,6 @@ std::vector<VkVertexInputBindingDescription> MythVertexBufferManager::Vertex::ge
     bindingDescriptions[0].inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
     return bindingDescriptions;
 }
-
 std::vector<VkVertexInputAttributeDescription> MythVertexBufferManager::Vertex::getAttributeDescriptions()
 {
     std::vector<VkVertexInputAttributeDescription> attributeDescriptions(2);
@@ -67,7 +66,6 @@ std::vector<VkVertexInputAttributeDescription> MythVertexBufferManager::Vertex::
     attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
     attributeDescriptions[0].offset = offsetof(Vertex, position);
 
-    // Interleaving the color in the buffer
     attributeDescriptions[1].binding = 0;
     attributeDescriptions[1].location = 1;
     attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;

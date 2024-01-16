@@ -44,6 +44,10 @@ class MythRenderer
     {
         return mythEngineSwapChain->getRenderPass();
     }
+    float getAspectRatio() const
+    {
+        return mythEngineSwapChain->extentAspectRatio();
+    }
     bool isFrameInProgress() const
     {
         return isFrameStarted;

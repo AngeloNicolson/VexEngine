@@ -16,11 +16,9 @@
 #include "../graphics/myth_vertex_buffer_manager.hpp"
 
 // libs
-#include <glm/ext/matrix_transform.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
 // std
-#include <glm/fwd.hpp>
 #include <memory>
 
 namespace myth_engine
@@ -28,8 +26,8 @@ namespace myth_engine
 
 struct TransformComponent
 {
-    glm::vec3 translation{}; // Position offset
-    glm::vec3 scale{1.0f, 1.0f, 1.0f};
+    glm::vec3 translation{};
+    glm::vec3 scale{1.f, 1.f, 1.f};
     glm::vec3 rotation{};
 
     // Matrix corresponds to translate * Ry * Rx * Rz * scale transformation
@@ -65,15 +63,6 @@ struct TransformComponent
                          },
                          {translation.x, translation.y, translation.z, 1.0f}};
     }
-
-    //        auto transform = glm::translate(glm::mat4{1.0f}, translation);
-    //
-    //        transform = glm::rotate(transform, rotation.y, {0.f, 1.f, 0.f});
-    //        transform = glm::rotate(transform, rotation.x, {1.f, 0.f, 0.f});
-    //        transform = glm::rotate(transform, rotation.z, {0.f, 0.f, 1.f});
-    //
-    //        transform = glm::scale(transform, scale);
-    //        return transform;
 };
 
 class MythGameObject
@@ -115,7 +104,5 @@ class MythGameObject
     }
     id_t id;
 };
-
 } // namespace myth_engine
-
 #endif // ENGINE_GAME_ENGINE_OBJECT_HPP
