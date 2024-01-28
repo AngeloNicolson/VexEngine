@@ -7,31 +7,53 @@ CORE_DIR = core
 GRAPHICS_DIR = graphics
 
 # List all the source files
-SRCS = $(wildcard $(CORE_DIR)/*.cpp) $(wildcard $(GRAPHICS_DIR)/*.cpp) main.cpp
+CORE_SRCS = $(wildcard $(CORE_DIR)/*.cpp)
+GRAPHICS_SRCS = $(wildcard $(GRAPHICS_DIR)/*.cpp)
+SHADER_SRCS = $(wildcard $(GRAPHICS_DIR)/shaders/*.vert) $(wildcard $(GRAPHICS_DIR)/shaders/*.frag)
+OTHER_SRCS = $(filter-out $(CORE_SRCS) $(GRAPHICS_SRCS) $(SHADER_SRCS), $(wildcard *.cpp))
 
 # Derive object file names from source files in the build directory
-OBJS = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(notdir $(SRCS)))
+CORE_OBJS = $(patsubst $(CORE_DIR)/%.cpp,$(BUILD_DIR)/$(CORE_DIR)/%.o,$(CORE_SRCS))
+GRAPHICS_OBJS = $(patsubst $(GRAPHICS_DIR)/%.cpp,$(BUILD_DIR)/$(GRAPHICS_DIR)/%.o,$(GRAPHICS_SRCS))
+SHADER_OBJS = $(patsubst $(GRAPHICS_DIR)/shaders/%.vert,$(BUILD_DIR)/$(GRAPHICS_DIR)/shaders/%.vert.spv,$(SHADER_SRCS)) $(patsubst $(GRAPHICS_DIR)/shaders/%.frag,$(BUILD_DIR)/$(GRAPHICS_DIR)/shaders/%.frag.spv,$(SHADER_SRCS))
+OTHER_OBJS = $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(OTHER_SRCS))
 
 # Final executable name in the build directory
 TARGET = $(BUILD_DIR)/VulkanTest
 
-.PHONY: all clean
+# Directory for shaders in the build directory
+SHADERS_BUILD_DIR = $(BUILD_DIR)/$(GRAPHICS_DIR)/shaders
 
-all: $(TARGET)
+.PHONY: all clean shaders
 
-$(TARGET): $(OBJS)
+all: $(TARGET) shaders
+
+$(TARGET): $(CORE_OBJS) $(GRAPHICS_OBJS) $(OTHER_OBJS)
 	$(CXX) $(CXXFLAGS) -o $@ $^ $(LDFLAGS)
 
-# Pattern rule to build .o files from .cpp files
-$(BUILD_DIR)/%.o: $(CORE_DIR)/%.cpp
+# Pattern rule to build .o files from .cpp files in the core directory
+$(BUILD_DIR)/$(CORE_DIR)/%.o: $(CORE_DIR)/%.cpp
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/%.o: $(GRAPHICS_DIR)/%.cpp
+# Pattern rule to build .o files from .cpp files in the graphics directory
+$(BUILD_DIR)/$(GRAPHICS_DIR)/%.o: $(GRAPHICS_DIR)/%.cpp
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-$(BUILD_DIR)/%.o: %.cpp
+# Rule to build shaders
+shaders: $(SHADER_OBJS)
+
+$(BUILD_DIR)/$(GRAPHICS_DIR)/shaders/%.vert.spv: $(GRAPHICS_DIR)/shaders/%.vert
+	@mkdir -p $(SHADERS_BUILD_DIR)
+	glslc $< -o $@
+
+$(BUILD_DIR)/$(GRAPHICS_DIR)/shaders/%.frag.spv: $(GRAPHICS_DIR)/shaders/%.frag
+	@mkdir -p $(SHADERS_BUILD_DIR)
+	glslc $< -o $@
+
+# Rule to build main.o
+$(BUILD_DIR)/main.o: main.cpp
 	@mkdir -p $(@D)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
