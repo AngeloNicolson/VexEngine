@@ -30,6 +30,7 @@ void Engine::run()
     RenderSystem renderSystem{mythDevice, mythRenderer.getSwapChainRenderPass()};
 
     MythCamera camera{};
+    camera.setViewDirection(glm::vec3(0.0f), glm::vec3(0.5, 0.0f, 1.0f));
 
     // While window is open poll events like clicks etc.
     while (!mythWindow.shouldClose())
