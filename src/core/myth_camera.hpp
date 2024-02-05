@@ -30,7 +30,7 @@ class MythCamera
 
     void setViewDirection(glm::vec3 position, glm::vec3 direction, glm::vec3 up = glm::vec3{0.0f, -1.f, 0.0f});
     void setViewTarget(glm::vec3 position, glm::vec3 target, glm::vec3 up = glm::vec3{0.0f, -1.f, 0.0f});
-    void setViewYXZ(glm::vec3 position, glm::vec3 rotation); // TODO: this is where i left off
+    void setViewYXZ(glm::vec3 position, glm::vec3 rotation);
 
     // Gets the projection matrix
     const glm::mat4 &getProjection() const

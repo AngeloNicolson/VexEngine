@@ -1,6 +1,8 @@
 #include "myth_engine.hpp"
 
+#include "../graphics/myth_window.hpp"
 #include "../graphics/render_system.hpp"
+#include "../input/keyboard_movement_controller.hpp"
 #include "myth_camera.hpp"
 #include "myth_game_object.hpp"
 
@@ -11,6 +13,7 @@
 #include <glm/gtc/constants.hpp>
 
 // STD
+#include <chrono>
 #include <memory>
 
 namespace myth_engine
@@ -30,14 +33,24 @@ void Engine::run()
     RenderSystem renderSystem{mythDevice, mythRenderer.getSwapChainRenderPass()};
 
     MythCamera camera{};
-    camera.setViewDirection(glm::vec3(0.0f), glm::vec3(0.5, 0.0f, 1.0f));
+    auto viewerObject = MythGameObject::createGameObject();
+    KeyboardMovementController cameraController{};
+
+    auto currentTime = std::chrono::high_resolution_clock::now();
 
     // While window is open poll events like clicks etc.
     while (!mythWindow.shouldClose())
     {
+
+        auto newTime = std::chrono::high_resolution_clock::now();
+        float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+        currentTime = newTime;
+
+        cameraController.moveInPlaneXZ(mythWindow.getGLFWwindow(), frameTime, viewerObject);
+        camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+
         glfwPollEvents();
         float aspectRatio = mythRenderer.getAspectRatio();
-        // camera.setOrthographicProjection(-aspectRatio, aspectRatio, -1, 1, -1, 1);
 
         camera.setPerspectiveProjection(glm::radians(50.0f), aspectRatio, 0.1f, 10.0f);
 
