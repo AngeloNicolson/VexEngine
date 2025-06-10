@@ -1,0 +1,6 @@
+John A. Nico
+
+# Challenges and Goals:
+- RAII -> Resource Acquisition Is Initialization
+- DOD -> Data Oriented Design (Better memory managment and access)
+- OOP -> Only when it makes sense (dont over abstract) 
