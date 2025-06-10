@@ -22,13 +22,32 @@ namespace GameEngine
        * @param name The title of the window.
        */
       Window(int w, int h, std::string name);
+
       ~Window();
+
+      /**
+       * @brief Deleted copy constructor to prevent copying of Window instances.
+       *
+       * Copying a Window object is disallowed to avoid issues with
+       * resource management and ownership.
+       */
+      Window(const Window&) = delete;
+
+      /**
+       * @brief Deleted copy assignment operator to prevent copying of Window instances.
+       *
+       * Assigning one Window object to another is disallowed to maintain
+       * unique ownership of underlying resources.
+       *
+       * @return Reference to the current Window object.
+       */
+      Window& operator=(const Window&) = delete;
 
       /**
        * @brief Checks if the window should close.
        * @return true if the user has requested to close the window.
        */
-      bool shouldClose() const;
+      bool shouldClose() { return glfwWindowShouldClose(window); };
 
       /**
        * @brief Polls OS events for the window.

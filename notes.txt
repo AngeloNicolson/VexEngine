@@ -4,3 +4,5 @@ John A. Nico
 - RAII -> Resource Acquisition Is Initialization
 - DOD -> Data Oriented Design (Better memory managment and access)
 - OOP -> Only when it makes sense (dont over abstract) 
+
+# Vulkan Graphics Pipeline:
