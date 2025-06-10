@@ -1,23 +1,24 @@
-#include "./core/myth_engine.hpp"
 
-// STD
-#include <cstdlib>
 #include <iostream>
+#include "./core/Application.hpp"
+
+// std
+#include <cstdlib>
 #include <stdexcept>
 
-int main() {
+int main()
+{
+  GameEngine::Core::Application app{};
 
-  // Instance of engine
-  myth_engine::Engine engine{};
-
-  try {
-    engine.run();
-  } catch (const std::exception &error) {
-    std::cerr << error.what() << std::endl;
-    return EXIT_FAILURE;
-  }
+  try
+    {
+      app.run();
+    }
+  catch(const std::exception& e)
+    {
+      std::cerr << e.what() << '\n';
+      return EXIT_FAILURE;
+    }
 
   return EXIT_SUCCESS;
-
-  return 0;
 }
