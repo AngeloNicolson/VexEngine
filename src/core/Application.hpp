@@ -2,6 +2,7 @@
 
 #include "../platform/Window.hpp"
 #include "../graphics/GraphicsPipeline.hpp"
+#include "../graphics/VulkanDevice.hpp"
 
 namespace GameEngine
 {
@@ -16,10 +17,13 @@ namespace GameEngine
       void run();
 
     private:
-      Platform::Window window{WIDTH, HEIGHT, "Vulkan"};
+      Platform::Window window{WIDTH, HEIGHT, "GhostEngine Window"};
 
+      Graphics::VulkanDevice vulkanDevice{window};
       // Thes files are relative to where the build command is executed
-      Graphics::GraphicsPipeline graphicsPipeline{"Shaders/simple_shader.vert.spv", "Shaders/simple_shader.frag.spv"};
+      Graphics::GraphicsPipeline graphicsPipeline{vulkanDevice, "Shaders/simple_shader.vert.spv",
+                                                  "Shaders/simple_shader.frag.spv",
+                                                  Graphics::GraphicsPipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)};
     };
 
   } // namespace Core

@@ -1,6 +1,8 @@
 // Window declaration
 #pragma once
 
+#define GLFW_INCLUDE_VULKAN
+
 #include <GLFW/glfw3.h>
 #include <string>
 
@@ -48,6 +50,22 @@ namespace GameEngine
        * @return true if the user has requested to close the window.
        */
       bool shouldClose() { return glfwWindowShouldClose(window); };
+
+      /**
+       * @brief Creates a Vulkan drawable surface associated with the window.
+       *
+       * This function creates a `VkSurfaceKHR` object, which is an abstraction
+       * that connects Vulkan to the underlying window system (e.g., GLFW, Win32, Xlib).
+       * The created surface is an instance-level object.
+       *
+       * @param instance The Vulkan instance with which to associate the surface.
+       * VK_KHR_win32_surface, VK_KHR_xcb_surface, or VK_KHR_wayland_surface).
+       * @param[out] surface A pointer to a `VkSurfaceKHR` handle where the created
+       * surface object will be stored. This value will be VK_NULL_HANDLE
+       * if the creation fails.
+       *
+       */
+      void createWindowSurface(VkInstance instance, VkSurfaceKHR* surface);
 
       /**
        * @brief Polls OS events for the window.

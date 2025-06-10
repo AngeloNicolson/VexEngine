@@ -1,3 +1,11 @@
+
+#pragma once
+
+// TODO: Make Doxygen comments in this file
+
+#include "VulkanDevice.hpp"
+
+// std
 #include <vector>
 #include <string>
 
@@ -5,10 +13,23 @@ namespace GameEngine
 {
   namespace Graphics
   {
+
+    struct PipelineConfigInfo
+    {};
+
     class GraphicsPipeline
     {
     public:
-      GraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath);
+      GraphicsPipeline(VulkanDevice& device, const std::string& vertFilepath, const std::string& fragFilepath,
+                       const PipelineConfigInfo& configInfo);
+
+      ~GraphicsPipeline() {};
+
+      GraphicsPipeline(const GraphicsPipeline&) = delete;
+      void operator=(const GraphicsPipeline&) = delete;
+
+      // Default static configuration for pipeline config
+      static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width, uint32_t height);
 
     private:
       /* @breif Read in a file
@@ -18,7 +39,15 @@ namespace GameEngine
       static std::vector<char> readFile(const std::string& filepath);
 
       // Helper Function
-      void createGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath);
+      void createGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath,
+                                  const PipelineConfigInfo& configInfo);
+
+      void createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule /*pointer to a pointer*/);
+
+      VulkanDevice& vulkanDevice;
+      VkPipeline graphicsPipeline;
+      VkShaderModule vertShaderModule;
+      VkShaderModule fragShaderModule;
     };
   } // namespace Graphics
 } // namespace GameEngine

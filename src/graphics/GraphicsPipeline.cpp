@@ -6,9 +6,11 @@
 namespace GameEngine
 {
 
-  Graphics::GraphicsPipeline::GraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath)
+  Graphics::GraphicsPipeline::GraphicsPipeline(VulkanDevice& device, const std::string& vertFilepath,
+                                               const std::string& fragFilepath, const PipelineConfigInfo& configInfo)
+      : vulkanDevice(device)
   {
-    createGraphicsPipeline(vertFilepath, fragFilepath);
+    createGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
   };
 
   std::vector<char> Graphics::GraphicsPipeline::readFile(const std::string& filepath)
@@ -34,13 +36,36 @@ namespace GameEngine
 
   // Creat graphics pipeline helper function
   void
-  Graphics::GraphicsPipeline::createGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath)
+  Graphics::GraphicsPipeline::createGraphicsPipeline(const std::string& vertFilepath, const std::string& fragFilepath,
+                                                     const PipelineConfigInfo& configInfo)
   {
     auto vertCode = readFile(vertFilepath);
     auto fragCode = readFile(fragFilepath);
 
     std::cout << "Vertex Shader Code Size: " << vertCode.size() << "\n";
     std::cout << "Fragment Shader Code Size: " << fragCode.size() << "\n";
+  };
+
+  void Graphics::GraphicsPipeline::createShaderModule(const std::vector<char>& code,
+                                                      VkShaderModule* shaderModule /*pointer to a pointer*/)
+  {
+    VkShaderModuleCreateInfo createInfo{};
+    createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+    createInfo.codeSize = code.size();
+    createInfo.pCode =
+      reinterpret_cast<const uint32_t*>(code.data()); // Vulkan expects a uint32 type instead of a char array
+
+    if(vkCreateShaderModule(vulkanDevice.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
+      {
+        throw std::runtime_error("Failed to create shader module");
+      }
+  };
+
+  Graphics::PipelineConfigInfo Graphics::GraphicsPipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height)
+  {
+    PipelineConfigInfo configInfo{};
+
+    return configInfo;
   };
 
 } // namespace GameEngine
