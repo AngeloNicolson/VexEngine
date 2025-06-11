@@ -6,3 +6,67 @@ John A. Nico
 - OOP -> Only when it makes sense (dont over abstract) 
 
 # Vulkan Graphics Pipeline:
+Challenge:
+- Understand how Vulkan converts vertex output (gl_Position) to framebuffer pixels.
+- Optimize mental model of pipeline transformations: Clip Space → NDC → Viewport.
+- Minimize abstraction. Know exactly what happens at each step.
+
+Reference Code:
+---------------
+VkViewport viewport = {
+  .x = 0.0f,
+  .y = 0.0f,
+  .width = (float)width,
+  .height = (float)height,
+  .minDepth = 0.0f,
+  .maxDepth = 1.0f
+};
+
+VkRect2D scissor = {
+  .offset = {0, 0},
+  .extent = {width, height}
+};
+
+Explanation:
+------------
+VERTEX SHADER OUTPUT → gl_Position: vec4 in CLIP SPACE (x,y,z,w)
+
+Vulkan does:
+  1. Perspective Divide: (x/w, y/w, z/w) → NDC coordinates, in range [-1, 1]
+  2. Viewport Transform (rasterizer stage):
+     Maps NDC → framebuffer pixels
+     - x_ndc = -1 → left side of viewport
+     - x_ndc = +1 → right side of viewport
+     - Same for y; origin top-left in framebuffer
+
+Viewport params define that mapping:
+  - .x and .y set the pixel offset (usually 0,0)
+  - .width and .height scale NDC range → pixel dimensions
+  - .minDepth, .maxDepth map z from NDC [-1,1] → [0,1] (or reversed for some setups)
+
+Scissor Rect:
+  - Defines a pixel mask post-viewport.
+  - Fragments outside scissor rect are discarded early (good for perf).
+  - Same coordinate space as viewport.
+
+MENTAL MODEL:
+-------------
+1. Object Space
+2. World Space           [Model * View]
+3. Clip Space            [* Projection]
+4. NDC                   [Divide by w]
+5. Viewport              [VkViewport maps NDC to framebuffer]
+6. Fragment Shader       [Per-pixel ops begin]
+
+Viewport is not a matrix op — it's a scale + bias directly applied to NDC.
+If you misconfigure it, the image appears skewed, cropped, or upside down.
+
+Perf Note:
+- Fixed-function. Cheap. Keep viewport and scissor dynamic if you plan to resize often.
+- Good place to cull unnecessary pixel work using scissor tests.
+
+RAII, DOD, OOP Fit:
+-------------------
+- Viewport config is raw data. No overhead.
+- Packed for GPU consumption = DOD win.
+- No need to abstract. Leave config structs flat and explicit.
