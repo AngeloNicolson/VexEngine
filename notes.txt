@@ -1,6 +1,13 @@
 John A. Nico
 
-# Challenges and Goals:
+
+# Performance goals:
+- Prepass to be less that 0.5ms
+
+# Make a PBR engine:
+
+## Design goals:
+**-------**
 - RAII -> Resource Acquisition Is Initialization
 - DOD -> Data Oriented Design (Better memory managment and access)
 - OOP -> Only when it makes sense (dont over abstract) 
@@ -12,7 +19,7 @@ Challenge:
 - Minimize abstraction. Know exactly what happens at each step.
 
 Reference Code:
----------------
+-------
 VkViewport viewport = {
   .x = 0.0f,
   .y = 0.0f,
@@ -28,21 +35,21 @@ VkRect2D scissor = {
 };
 
 Explanation:
-------------
+-------
 VERTEX SHADER OUTPUT → gl_Position: vec4 in CLIP SPACE (x,y,z,w)
 
 Vulkan does:
   1. Perspective Divide: (x/w, y/w, z/w) → NDC coordinates, in range [-1, 1]
   2. Viewport Transform (rasterizer stage):
      Maps NDC → framebuffer pixels
-     - x_ndc = -1 → left side of viewport
-     - x_ndc = +1 → right side of viewport
+     - x_ndc = -1 -> left side of viewport
+     - x_ndc = +1 -> right side of viewport
      - Same for y; origin top-left in framebuffer
 
 Viewport params define that mapping:
   - .x and .y set the pixel offset (usually 0,0)
-  - .width and .height scale NDC range → pixel dimensions
-  - .minDepth, .maxDepth map z from NDC [-1,1] → [0,1] (or reversed for some setups)
+  - .width and .height scale NDC range -> pixel dimensions
+  - .minDepth, .maxDepth map z from NDC [-1,1] -> [0,1] (or reversed for some setups)
 
 Scissor Rect:
   - Defines a pixel mask post-viewport.
@@ -70,3 +77,24 @@ RAII, DOD, OOP Fit:
 - Viewport config is raw data. No overhead.
 - Packed for GPU consumption = DOD win.
 - No need to abstract. Leave config structs flat and explicit.
+
+Swapchain - Framebuffers
+=========================
+
+Challenge:
+- Understand what framebuffers are and how they work
+- Understand how Vulkan handles the swapchain and framebuffers
+- Understand how this ties into the graphics pipeline
+
+Current understanding:
+- The graphics pipeline outputs to a framebuffer
+- A framebuffer has attachments like a color buffer and a depth buffer
+- The color attachment is usually a swapchain image
+- A framebuffer is created by binding image views (e.g., for color and depth) to a render pass
+- After rendering, Vulkan presents the swapchain image to the screen
+
+
+V-Sync, double and tripple buffering:
+- Frontbuffer is the buffer on screen
+- backbuffer is the current buffer being rendered too
+
