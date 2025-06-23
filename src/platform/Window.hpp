@@ -50,6 +50,7 @@ namespace GameEngine
        * @return true if the user has requested to close the window.
        */
       bool shouldClose() { return glfwWindowShouldClose(window); };
+      VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
 
       /**
        * @brief Creates a Vulkan drawable surface associated with the window.

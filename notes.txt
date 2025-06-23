@@ -1,100 +1,129 @@
 John A. Nico
 
-
 # Performance goals:
+
 - Prepass to be less that 0.5ms
 
 # Make a PBR engine:
 
 ## Design goals:
+
 **-------**
+
 - RAII -> Resource Acquisition Is Initialization
 - DOD -> Data Oriented Design (Better memory managment and access)
-- OOP -> Only when it makes sense (dont over abstract) 
+- OOP -> Only when it makes sense (dont over abstract)
 
 # Vulkan Graphics Pipeline:
+
 Challenge:
-- Understand how Vulkan converts vertex output (gl_Position) to framebuffer pixels.
-- Optimize mental model of pipeline transformations: Clip Space → NDC → Viewport.
+
+- Understand how Vulkan converts vertex output (gl_Position) to framebuffer
+  pixels.
+- Optimize mental model of pipeline transformations: Clip Space → NDC →
+  Viewport.
 - Minimize abstraction. Know exactly what happens at each step.
 
-Reference Code:
--------
-VkViewport viewport = {
-  .x = 0.0f,
-  .y = 0.0f,
-  .width = (float)width,
-  .height = (float)height,
-  .minDepth = 0.0f,
-  .maxDepth = 1.0f
-};
+## Reference Code:
 
-VkRect2D scissor = {
-  .offset = {0, 0},
-  .extent = {width, height}
-};
+VkViewport viewport = { .x = 0.0f, .y = 0.0f, .width = (float)width, .height
+= (float)height, .minDepth = 0.0f, .maxDepth = 1.0f };
 
-Explanation:
--------
+VkRect2D scissor = { .offset = {0, 0}, .extent = {width, height} };
+
+## Explanation:
+
 VERTEX SHADER OUTPUT → gl_Position: vec4 in CLIP SPACE (x,y,z,w)
 
 Vulkan does:
-  1. Perspective Divide: (x/w, y/w, z/w) → NDC coordinates, in range [-1, 1]
-  2. Viewport Transform (rasterizer stage):
-     Maps NDC → framebuffer pixels
-     - x_ndc = -1 -> left side of viewport
-     - x_ndc = +1 -> right side of viewport
-     - Same for y; origin top-left in framebuffer
+
+1. Perspective Divide: (x/w, y/w, z/w) → NDC coordinates, in range [-1, 1]
+1. Viewport Transform (rasterizer stage): Maps NDC → framebuffer pixels
+   - x_ndc = -1 -> left side of viewport
+   - x_ndc = +1 -> right side of viewport
+   - Same for y; origin top-left in framebuffer
 
 Viewport params define that mapping:
-  - .x and .y set the pixel offset (usually 0,0)
-  - .width and .height scale NDC range -> pixel dimensions
-  - .minDepth, .maxDepth map z from NDC [-1,1] -> [0,1] (or reversed for some setups)
+
+- .x and .y set the pixel offset (usually 0,0)
+- .width and .height scale NDC range -> pixel dimensions
+- .minDepth, .maxDepth map z from NDC [-1,1] -> [0,1] (or reversed for some
+  setups)
 
 Scissor Rect:
-  - Defines a pixel mask post-viewport.
-  - Fragments outside scissor rect are discarded early (good for perf).
-  - Same coordinate space as viewport.
 
-MENTAL MODEL:
--------------
+- Defines a pixel mask post-viewport.
+- Fragments outside scissor rect are discarded early (good for perf).
+- Same coordinate space as viewport.
+
+## MENTAL MODEL:
+
 1. Object Space
-2. World Space           [Model * View]
-3. Clip Space            [* Projection]
-4. NDC                   [Divide by w]
-5. Viewport              [VkViewport maps NDC to framebuffer]
-6. Fragment Shader       [Per-pixel ops begin]
+1. World Space [Model * View]
+1. Clip Space [\* Projection]
+1. NDC [Divide by w]
+1. Viewport [VkViewport maps NDC to framebuffer]
+1. Fragment Shader [Per-pixel ops begin]
 
-Viewport is not a matrix op — it's a scale + bias directly applied to NDC.
-If you misconfigure it, the image appears skewed, cropped, or upside down.
+Viewport is not a matrix op — it's a scale + bias directly applied to NDC. If
+you misconfigure it, the image appears skewed, cropped, or upside down.
 
 Perf Note:
-- Fixed-function. Cheap. Keep viewport and scissor dynamic if you plan to resize often.
+
+- Fixed-function. Cheap. Keep viewport and scissor dynamic if you plan to
+  resize often.
 - Good place to cull unnecessary pixel work using scissor tests.
 
-RAII, DOD, OOP Fit:
--------------------
+## RAII, DOD, OOP Fit:
+
 - Viewport config is raw data. No overhead.
 - Packed for GPU consumption = DOD win.
 - No need to abstract. Leave config structs flat and explicit.
 
-Swapchain - Framebuffers
-=========================
+# Swapchain - Framebuffers
 
 Challenge:
+
 - Understand what framebuffers are and how they work
 - Understand how Vulkan handles the swapchain and framebuffers
 - Understand how this ties into the graphics pipeline
 
 Current understanding:
+
 - The graphics pipeline outputs to a framebuffer
 - A framebuffer has attachments like a color buffer and a depth buffer
 - The color attachment is usually a swapchain image
-- A framebuffer is created by binding image views (e.g., for color and depth) to a render pass
+- A framebuffer is created by binding image views (e.g., for color and depth)
+  to a render pass
 - After rendering, Vulkan presents the swapchain image to the screen
 
-
 V-Sync, double and tripple buffering:
+
 - Frontbuffer is the buffer on screen
 - backbuffer is the current buffer being rendered too
 
+## Present Modes pros vs cons:
+
+FIFO:
+
+- V-Sync bound
+- Good for mobile
+- Always supported
+
+* Latency Mailbox:
+
+- Low latency
+
+* Not always supported
+* Higher power consumption because GPU is always processing Immediate:
+
+- Low Latency
+- Usually Supported
+
+* Higher Power consumption
+* Screen Tearing
+
+## RenderPass
+
+- A render pass describes the structure and format of a framebuffer object
+  and thier attachments

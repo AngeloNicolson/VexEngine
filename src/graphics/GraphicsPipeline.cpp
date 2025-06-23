@@ -87,6 +87,14 @@ namespace GameEngine
     vertexInputInfo.pVertexAttributeDescriptions = nullptr;
     vertexInputInfo.pVertexBindingDescriptions = nullptr;
 
+    // Combine viewport and scissor into a single state create info variable
+    VkPipelineViewportStateCreateInfo viewportInfo{};
+    viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    viewportInfo.viewportCount = 1; // Defines the nummber of viewports
+    viewportInfo.pViewports = &configInfo.viewport;
+    viewportInfo.scissorCount = 1;
+    viewportInfo.pScissors = &configInfo.scissor;
+
     // USe all the data above to create the graphics pipeline object
     VkGraphicsPipelineCreateInfo pipelineInfo{};
     pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
@@ -96,7 +104,7 @@ namespace GameEngine
     // Connect pipeline createInfo to configInfo (Can now be used to create different pipelines)
     pipelineInfo.pVertexInputState = &vertexInputInfo;
     pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-    pipelineInfo.pViewportState = &configInfo.viewportInfo;
+    pipelineInfo.pViewportState = &viewportInfo;
     pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
     pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
     pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
@@ -134,10 +142,23 @@ namespace GameEngine
       }
   };
 
+  void Graphics::GraphicsPipeline::bind(VkCommandBuffer commandBuffer)
+  {
+    vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
+  };
+
   // Creates a basic PipelineConfigInfo struct with default settings for the input assembly stage.
   Graphics::PipelineConfigInfo Graphics::GraphicsPipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height)
   {
     PipelineConfigInfo configInfo{};
+    // TODO: NOT SURE THIS SHOULD BE HERE
+    configInfo.multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    configInfo.multisampleInfo.sampleShadingEnable = VK_FALSE;
+    configInfo.multisampleInfo.rasterizationSamples = VK_SAMPLE_COUNT_1_BIT;
+    configInfo.multisampleInfo.minSampleShading = 1.0f;
+    configInfo.multisampleInfo.pSampleMask = nullptr;
+    configInfo.multisampleInfo.alphaToCoverageEnable = VK_FALSE;
+    configInfo.multisampleInfo.alphaToOneEnable = VK_FALSE;
 
     // Specify the type of the struct so Vulkan knows how to interpret it.
     configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
@@ -160,15 +181,8 @@ namespace GameEngine
     configInfo.scissor.offset = {0, 0};
     configInfo.scissor.extent = {width, height};
 
-    // Combine viewport and scissor into a single state create info variable
-    configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-    configInfo.viewportInfo.viewportCount = 1; // Defines the nummber of viewports
-    configInfo.viewportInfo.pViewports = &configInfo.viewport;
-    configInfo.viewportInfo.scissorCount = 1;
-    configInfo.viewportInfo.pScissors = &configInfo.scissor;
-
     // Rasterization - Breaking up geometry into fragments for each triangle the pixel overlaps
-    configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO;
+    configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
     configInfo.rasterizationInfo.depthClampEnable = VK_FALSE; // Force z component to be between 0 - 1
     configInfo.rasterizationInfo.rasterizerDiscardEnable = VK_FALSE;
     configInfo.rasterizationInfo.polygonMode = VK_POLYGON_MODE_FILL;

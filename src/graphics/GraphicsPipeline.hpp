@@ -18,7 +18,6 @@ namespace GameEngine
     {
       VkViewport viewport;
       VkRect2D scissor;
-      VkPipelineViewportStateCreateInfo viewportInfo;
       VkPipelineInputAssemblyStateCreateInfo inputAssemblyInfo;
       VkPipelineRasterizationStateCreateInfo rasterizationInfo;
       VkPipelineMultisampleStateCreateInfo multisampleInfo;
@@ -40,6 +39,8 @@ namespace GameEngine
 
       GraphicsPipeline(const GraphicsPipeline&) = delete;
       void operator=(const GraphicsPipeline&) = delete;
+
+      void bind(VkCommandBuffer commandBuffer);
 
       // Default static configuration for pipeline config
       static PipelineConfigInfo defaultPipelineConfigInfo(uint32_t width, uint32_t height);

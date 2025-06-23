@@ -6,7 +6,7 @@
 #include <cstring>
 #include <iostream>
 #include <limits>
-#include <set>
+// #include <set>
 #include <stdexcept>
 
 namespace GameEngine
@@ -247,6 +247,7 @@ namespace GameEngine
       VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
     dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
 
+    // This is where we attach "Attachments". Location 0 is colorbuffer and location 1 is depthbuffer
     std::array<VkAttachmentDescription, 2> attachments = {colorAttachment, depthAttachment};
     VkRenderPassCreateInfo renderPassInfo = {};
     renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
@@ -378,6 +379,7 @@ namespace GameEngine
   VkPresentModeKHR
   Graphics::SwapChain::chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes)
   {
+    // Only support mode ganuteed to be supported is FIFO (First in last out)
     for(const auto& availablePresentMode : availablePresentModes)
       {
         if(availablePresentMode == VK_PRESENT_MODE_MAILBOX_KHR)

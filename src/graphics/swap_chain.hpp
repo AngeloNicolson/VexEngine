@@ -52,6 +52,11 @@ namespace GameEngine
 
       // Helper functions
       VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+      /**
+       * @breif This is the present mode for frames
+       *
+       * Other Modes FIFO, Mailbox, Immediate. See notes.txt for pros and cons of each mode
+       **/
       VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
       VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
 

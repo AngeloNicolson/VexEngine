@@ -3,6 +3,11 @@
 #include "../platform/Window.hpp"
 #include "../graphics/GraphicsPipeline.hpp"
 #include "../graphics/VulkanDevice.hpp"
+#include "../graphics/swap_chain.hpp"
+
+// std
+#include <memory>
+#include <vector>
 
 namespace GameEngine
 {
@@ -14,16 +19,32 @@ namespace GameEngine
       static constexpr int WIDTH = 800;
       static constexpr int HEIGHT = 600;
 
+      Application();
+      ~Application();
+
+      // Copy constructors (Because the app is now managing vulkan objects we need to delete copy constructors)
+      Application(const Platform::Window&) = delete;
+      Application& operator=(const Platform::Window&) = delete;
+
       void run();
 
     private:
-      Platform::Window window{WIDTH, HEIGHT, "GhostEngine Window"};
+      void createPipelineLayout();
+      void createPipeline();
+      void createCommandBuffers();
+      void drawFrame();
 
-      Graphics::VulkanDevice vulkanDevice{window};
-      // Thes files are relative to where the build command is executed
-      Graphics::GraphicsPipeline graphicsPipeline{vulkanDevice, "Shaders/simple_shader.vert.spv",
-                                                  "Shaders/simple_shader.frag.spv",
-                                                  Graphics::GraphicsPipeline::defaultPipelineConfigInfo(WIDTH, HEIGHT)};
+      Platform::Window vulkanWindow{WIDTH, HEIGHT, "GhostEngine Window"};
+      Graphics::VulkanDevice vulkanDevice{vulkanWindow};
+
+      Graphics::SwapChain swapChain{vulkanDevice, vulkanWindow.getExtent()};
+
+      // Reason for using smart pointer is so we dont have to call new and delete for every pipeline
+      // (https://www.learncpp.com/cpp-tutorial/introduction-to-smart-pointers-move-semantics/)
+      std::unique_ptr<Graphics::GraphicsPipeline> pipeline;
+
+      VkPipelineLayout pipelineLayout;
+      std::vector<VkCommandBuffer> commandBuffers;
     };
 
   } // namespace Core
