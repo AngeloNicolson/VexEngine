@@ -127,3 +127,14 @@ FIFO:
 
 - A render pass describes the structure and format of a framebuffer object
   and thier attachments
+
+# Memory
+
+Vulkan lets us manage buffers and memory seperatly. We are doing this
+manually.
+
+- Reason is allocating memory takes time. So having to later allocate more
+  can affect performance. so we should manually allocate a larger chunk in
+  the begginning.
+- Look at how to implement the vulkan memory allocator
+  https://pastebin.com/0bu2a2ZP

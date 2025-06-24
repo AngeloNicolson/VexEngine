@@ -14,9 +14,9 @@ namespace GameEngine
 {
 
   /**
-   * @brief Namespace for rendering-related functionality.
+   * @brief Namespace for graphics-related functionality.
    */
-  namespace renderer
+  namespace Graphics
   {
     /**
      * @brief A class representing a mesh for rendering in Vulkan.
@@ -82,10 +82,10 @@ namespace GameEngine
       void createVertexBuffers(const std::vector<Vertex>& vertices);
 
       Graphics::VulkanDevice& vulkanDevice; ///< Reference to the Vulkan device.
-      VkBuffer vertexbuffer;                ///< Vulkan buffer for vertex data.
+      VkBuffer vertexBuffer;                ///< Vulkan buffer for vertex data.
       VkDeviceMemory vertexBufferMemory;    ///< Vulkan memory for the vertex buffer.
       uint32_t vertexCount;                 ///< Number of vertices in the mesh.
     };
-  } // namespace renderer
+  } // namespace Graphics
 
 } // namespace GameEngine

@@ -4,6 +4,7 @@
 #include "../graphics/GraphicsPipeline.hpp"
 #include "../graphics/VulkanDevice.hpp"
 #include "../graphics/swap_chain.hpp"
+#include "../graphics/mesh.hpp"
 
 // std
 #include <memory>
@@ -29,6 +30,7 @@ namespace GameEngine
       void run();
 
     private:
+      void loadModels();
       void createPipelineLayout();
       void createPipeline();
       void createCommandBuffers();
@@ -45,6 +47,7 @@ namespace GameEngine
 
       VkPipelineLayout pipelineLayout;
       std::vector<VkCommandBuffer> commandBuffers;
+      std::unique_ptr<Graphics::Mesh> mesh;
     };
 
   } // namespace Core

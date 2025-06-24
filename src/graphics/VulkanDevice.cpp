@@ -406,6 +406,7 @@ namespace GameEngine
     throw std::runtime_error("failed to find suitable memory type!");
   }
 
+  // TODO: Re-write when a "memory allocator" is being made
   void
   Graphics::VulkanDevice::createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties,
                                        VkBuffer& buffer, VkDeviceMemory& bufferMemory)
@@ -421,9 +422,11 @@ namespace GameEngine
         throw std::runtime_error("failed to create vertex buffer!");
       }
 
+    // Querry the buffers memory requirments
     VkMemoryRequirements memRequirements;
     vkGetBufferMemoryRequirements(device_, buffer, &memRequirements);
 
+    // Allocate memory of the proper size
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
     allocInfo.allocationSize = memRequirements.size;
@@ -433,7 +436,7 @@ namespace GameEngine
       {
         throw std::runtime_error("failed to allocate vertex buffer memory!");
       }
-
+    // If above is successfull then bind the buffer to memory we just allocated
     vkBindBufferMemory(device_, buffer, bufferMemory, 0);
   }
 

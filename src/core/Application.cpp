@@ -9,6 +9,7 @@ namespace GameEngine
   {
     Application::Application()
     {
+      loadModels();
       createPipelineLayout();
       createPipeline();
       createCommandBuffers();
@@ -28,6 +29,33 @@ namespace GameEngine
       // Block CPU until GPU operations have completed
       // This way we know its save to clean up resources knowing they are no longer in use
       vkDeviceWaitIdle(vulkanDevice.device());
+    }
+
+    void
+    sierpinski(std::vector<Graphics::Mesh::Vertex>& vertices, int depth, glm::vec2 left, glm::vec2 right, glm::vec2 top)
+    {
+      if(depth <= 0)
+        {
+          vertices.push_back({top});
+          vertices.push_back({right});
+          vertices.push_back({left});
+        }
+      else
+        {
+          auto leftTop = 0.5f * (left + top);
+          auto rightTop = 0.5f * (right + top);
+          auto leftRight = 0.5f * (left + right);
+          sierpinski(vertices, depth - 1, left, leftRight, leftTop);
+          sierpinski(vertices, depth - 1, leftRight, right, rightTop);
+          sierpinski(vertices, depth - 1, leftTop, rightTop, top);
+        }
+    }
+
+    void Application::loadModels()
+    {
+      std::vector<Graphics::Mesh::Vertex> vertices{};
+      sierpinski(vertices, 5, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.0f, -0.5f});
+      mesh = std::make_unique<Graphics::Mesh>(vulkanDevice, vertices);
     }
 
     // Pipeline Layout
@@ -101,7 +129,8 @@ namespace GameEngine
           vkCmdBeginRenderPass(commandBuffers[i], &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
           pipeline->bind(commandBuffers[i]);
-          vkCmdDraw(commandBuffers[i], 3, 1, 0, 0); // records a draw command to draw 3 vertices in only one instance
+          mesh->bind(commandBuffers[i]);
+          mesh->draw(commandBuffers[i]);
 
           // Finish recording
           vkCmdEndRenderPass(commandBuffers[i]);

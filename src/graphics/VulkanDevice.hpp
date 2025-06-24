@@ -57,17 +57,61 @@ namespace GameEngine
       VkFormat
       findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
-      // Buffer Helper Functions
+      /**
+       * @brief Creates a Vulkan buffer with specified size, usage, and memory properties.
+       * @param size Size of the buffer in bytes.
+       * @param usage Vulkan buffer usage flags (e.g., VK_BUFFER_USAGE_VERTEX_BUFFER_BIT).
+       * @param properties Vulkan memory property flags (e.g., VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT).
+       * @param buffer Reference to the created Vulkan buffer handle.
+       * @param bufferMemory Reference to the allocated Vulkan device memory for the buffer.
+       */
+
       void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer,
                         VkDeviceMemory& bufferMemory);
+
+      /**
+       * @brief Begins a single-time-use Vulkan command buffer for one-off operations.
+       * @return The allocated VkCommandBuffer handle.
+       */
       VkCommandBuffer beginSingleTimeCommands();
+
+      /**
+       * @brief Ends and submits a single-time-use Vulkan command buffer.
+       * @param commandBuffer The VkCommandBuffer to end and submit.
+       */
       void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+
+      /**
+       * @brief Copies data from a source Vulkan buffer to a destination buffer.
+       * @param srcBuffer The source VkBuffer to copy from.
+       * @param dstBuffer The destination VkBuffer to copy to.
+       * @param size Size of the data to copy in bytes.
+       */
       void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
+
+      /**
+       * @brief Copies data from a Vulkan buffer to a Vulkan image.
+       * @param buffer The source VkBuffer containing the data.
+       * @param image The destination VkImage to copy to.
+       * @param width Width of the image in pixels.
+       * @param height Height of the image in pixels.
+       * @param layerCount Number of layers in the image.
+       */
       void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, uint32_t layerCount);
 
+      /**
+       * @brief Creates a Vulkan image with the specified creation info and memory properties.
+       * @param imageInfo Vulkan image creation info structure.
+       * @param properties Vulkan memory property flags (e.g., VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT).
+       * @param image Reference to the created VkImage handle.
+       * @param imageMemory Reference to the allocated Vulkan device memory for the image.
+       */
       void createImageWithInfo(const VkImageCreateInfo& imageInfo, VkMemoryPropertyFlags properties, VkImage& image,
                                VkDeviceMemory& imageMemory);
 
+      /**
+       * @brief Stores properties of the physical Vulkan device.
+       */
       VkPhysicalDeviceProperties properties;
 
     private:
