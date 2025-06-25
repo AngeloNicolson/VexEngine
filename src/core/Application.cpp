@@ -33,7 +33,8 @@ namespace GameEngine
 
     void Application::loadModels()
     {
-      std::vector<Graphics::Mesh::Vertex> vertices{{{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
+      std::vector<Graphics::Mesh::Vertex> vertices{
+        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}}, {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}, {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
 
       mesh = std::make_unique<Graphics::Mesh>(vulkanDevice, vertices);
     };

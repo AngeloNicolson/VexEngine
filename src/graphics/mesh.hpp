@@ -25,6 +25,7 @@ namespace GameEngine
       struct Vertex
       {
         glm::vec2 position; ///< 2D position of the vertex.
+        glm::vec3 color;
 
         /**
          * @brief Retrieves the Vulkan vertex input binding descriptions.
