@@ -1,42 +1,31 @@
-﻿<a name="top"></a>
-[![LinkedIn][linkedin-shield]][linkedin-url]
+﻿<a name="top"></a> [![LinkedIn][linkedin-shield]][linkedin-url]
 
-
-
-<!-- PROJECT LOGO -->
 <br />
 <div align="center">
-  <a href="https://github.com/othneildrew/Best-README-Template">
-  </a>
-
   <h1 align="center">VexEngine</h1>
 
-  <p align="center">
-    The beginning of my graphics programming journey!
+<p align="center">
+    A hands-on exploration of graphics programming and game engine development.
     <br/>
     <a href="https://github.com/AngeloNicolson/VexEngine">Explore</a>
-    �
+    •
     <a href="https://github.com/AngeloNicolson/VexEngine/issues">Report a Bug</a>
-    �
-    <a href="https://github.com/AngeloNicolson/VexEngine/issues">Suggest feature</a>
+    •
+    <a href="https://github.com/AngeloNicolson/VexEngine/issues">Suggest a Feature</a>
   </p>
 </div>
 
-
-
-<!-- TABLE OF CONTENTS -->
+______________________________________________________________________
 
 <details>
   <summary>Table of Contents</summary>
   <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
+    <li><a href="#about-the-project">About the Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
       </ul>
     </li>
-    <li>
-      <a href="#getting-started">Getting Started</a>
+    <li><a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
@@ -51,140 +40,144 @@
   </ol>
 </details>
 
+______________________________________________________________________
 
+## About the Project
 
-<!-- ABOUT THE PROJECT -->
-## About The Project
+VexEngine is a personal project created to deepen my understanding of
+real-time graphics and engine architecture. While there are many great
+engines available, building one from the ground up offers insight no tutorial
+alone can provide.
 
-There are many great game engines out there. But I crave for a deeper understanding of how they work.
-This is my journey into exploring graphics programming. 
-Eventually this will be an engine that can easily generate procedural environments AI and menue's with basic developer/user inputs.
+The long-term goal is to develop a lightweight, flexible engine capable of:
 
-Here's why:
-* I want indi developers to be able to create amazing games that rival AAA companie.
-* To give indi devs a way to tell thier stories without any financial obligations to allow them to grow and help create a fair and thriving industry..
+- Procedurally generating environments
+- Supporting simple AI systems
+- Building functional menus with minimal setup
 
-These are just ideas...
+While still in early stages, the intention is to eventually build a
+foundation for prototyping my own game ideas without financial barriers or
+engine bloat. This is purely so I can understand every aspect of a game
+engine and work on becoming highly skilled in memory and resource management.
 
-...for now.
+This is a learning project, but steeped in personal ambition.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+______________________________________________________________________
 
 ### Built With
 
-This section should list any major frameworks/libraries used to bootstrap your project. Leave any add-ons/plugins for the acknowledgements section. Here are a few examples.
-
-<br/>
-
-* [![C++][C++]][C++-url]
-* [![vulkan][vulkan]][vulkan-url]
+- [![C++]][c++-url]
+- [![vulkan]][vulkan-url]
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- GETTING STARTED -->
+______________________________________________________________________
+
 ## Getting Started
 
-To Get this early build up and running locally, you will need the following:
-* GLFW - https://www.glfw.org/
-* glm - https://github.com/g-truc/glm
-* Vulkan SDK - https://vulkan.lunarg.com/
+To get the current build running locally, make sure you have the following
+dependencies installed:
+
+### Prerequisites
+
+- [GLFW](https://www.glfw.org/)
+- [glm](https://github.com/g-truc/glm)
+- [Vulkan SDK](https://vulkan.lunarg.com/)
 
 ### Installation
 
-_Below is an example of how you can instruct your audience on installing and setting up your app. This template doesn't rely on any external dependencies or services._
-
-1. Clone the repo
-   ```sh
-   git clone https://github.com/AngeloNicolson/VexEngine.git
-   ```
-2. Currently working on cmake build for ease of use with repo.
-
+1. Clone the repository: $$ git clone
+   https://github.com/AngeloNicolson/VexEngine.git $$
+1. A make build system is currently being added to simplify setup.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+______________________________________________________________________
 
-
-<!-- USAGE EXAMPLES -->
 ## Usage
 
-This engine has little use casses at the moment except for setting up the rendering and lighting pipeline.
+At this stage, VexEngine primarily serves as a sandbox for myself to learn
+and test renderingi, animation and lighting systems.
 
-
-_For mor information on how this was built, [Documentation](https://vulkan-tutorial.com/)_
+For more details on the underlying implementation, I recommend the excellent
+[Vulkan Tutorial](https://vulkan-tutorial.com/), which guided much of this
+setup.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+______________________________________________________________________
 
-
-<!-- ROADMAP -->
 ## Roadmap
 
-- [x] Update README
-- [ ] Restructure project folders
-- [ ] Add billboards to render system
-- [ ] Add support for rendering multiple lights
-- [ ] Add support for specular lighting
-- [ ] Add support for Alpha blending
+- [x] Initial README
+- [x] Refactor project structure
+- [ ] Fragment Interpolation
+- [ ] Add billboard rendering
+- [ ] Support multiple dynamic lights
+- [ ] Add specular lighting support
+- [ ] Implement alpha blending
 
-
-See the [open issues](https://github.com/AngeloNicolson/VexEngine/issues) for a full list of proposed features (and known issues).
+See the [open issues](https://github.com/AngeloNicolson/VexEngine/issues) for
+a full list of planned features and improvements.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+______________________________________________________________________
 
-
-<!-- CONTRIBUTING -->
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. 
-<br/>
-Any contributions you make are **greatly appreciated**.
+Contributions are always welcome!
 
-If you have a suggestion that wouldimprove this engine, you can simply open an issue with the tag "enhancement" or "feature".
-Don't forget to give the project a star! Thanks again!
+If you have an idea, bug fix, or improvement in mind:
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/Amazing_Feature`)
-3. Commit your Changes (`git commit -m 'Add some Amazing_Feature'`)
-4. Push to the Branch (`git push origin feature/Amazing_Feature`)
-5. Open a Pull Request
+1. Fork the repository
+1. Create a feature branch\
+   $$ git checkout -b feature/my-feature $$
+1. Commit your changes\
+   $$ git commit -m 'Add my feature' $$
+1. Push to your fork\
+   $$ git push origin feature/my-feature $$
+1. Open a Pull Request
+
+Feel free to open an issue with the "enhancement" tag or drop a suggestion.
+And if you find this project helpful, consider giving it a star—thank you!
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-<!-- CONTACT -->
+______________________________________________________________________
+
 ## Contact
 
-Message me through [![LinkedIn][linkedin-shield]][linkedin-url] 
-<br/>
-Send an email to my [![email][email-shield]][email-url]
+Connect with me on [![LinkedIn][linkedin-shield]][linkedin-url] or reach out
+via [![email][email-shield]][email-url].
 
 Project Link: [VexEngine](https://github.com/AngeloNicolson/VexEngine)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
+______________________________________________________________________
 
-
-<!-- ACKNOWLEDGMENTS -->
 ## Acknowledgments
 
-* Alexander Overvoorde - https://vulkan-tutorial.com/
-* When I add a license -> [Choose an Open Source License](https://choosealicense.com)
-* Markdown images [Img Shields](https://shields.io)
-* [React Icons](https://react-icons.github.io/react-icons/search)
+- [Alexander Overvoorde](https://vulkan-tutorial.com/) – Vulkan tutorials
+- [ChooseALicense.com](https://choosealicense.com) – Open source license
+  reference
+- [Shields.io](https://shields.io) – Badge generator
+- [React Icons](https://react-icons.github.io/react-icons/search)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
-
+______________________________________________________________________
 
 <!-- MARKDOWN LINKS & IMAGES -->
-<!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
-[Email-shield]: https://img.shields.io/badge/outlook-black.svg?style=for-the-badge&logo=email&colorB=555
-[Email-url]: mailto:AngeloNicolson.github@outlook.com
+
+[c++]: https://img.shields.io/badge/C++-blue?style=for-the-badge&logo=cplusplus&logoColor=white
+[c++-url]: http://www.cplusplus.org/
+[email-shield]: https://img.shields.io/badge/outlook-black.svg?style=for-the-badge&logo=email&colorB=555
+[email-url]: mailto:AngeloNicolson.github@outlook.com
 [linkedin-shield]: https://img.shields.io/badge/-LinkedIn-black.svg?style=for-the-badge&logo=linkedin&colorB=555
 [linkedin-url]: https://www.linkedin.com/in/angelo-nicolson-5ab4b772/
-[product-screenshot]: images/screenshot.png
-[C++]: https://img.shields.io/badge/C++-blue?style=for-the-badge&logo=cplusplus&logoColor=white
-[C++-url]: http://www.cplusplus.org/
 [vulkan]: https://img.shields.io/badge/Vulkan-darkred?style=for-the-badge&logo=vulkan&logoColor=white
 [vulkan-url]: https://www.vulkan.org/
