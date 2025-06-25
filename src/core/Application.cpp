@@ -31,32 +31,12 @@ namespace GameEngine
       vkDeviceWaitIdle(vulkanDevice.device());
     }
 
-    void
-    sierpinski(std::vector<Graphics::Mesh::Vertex>& vertices, int depth, glm::vec2 left, glm::vec2 right, glm::vec2 top)
-    {
-      if(depth <= 0)
-        {
-          vertices.push_back({top});
-          vertices.push_back({right});
-          vertices.push_back({left});
-        }
-      else
-        {
-          auto leftTop = 0.5f * (left + top);
-          auto rightTop = 0.5f * (right + top);
-          auto leftRight = 0.5f * (left + right);
-          sierpinski(vertices, depth - 1, left, leftRight, leftTop);
-          sierpinski(vertices, depth - 1, leftRight, right, rightTop);
-          sierpinski(vertices, depth - 1, leftTop, rightTop, top);
-        }
-    }
-
     void Application::loadModels()
     {
-      std::vector<Graphics::Mesh::Vertex> vertices{};
-      sierpinski(vertices, 5, {-0.5f, 0.5f}, {0.5f, 0.5f}, {0.0f, -0.5f});
+      std::vector<Graphics::Mesh::Vertex> vertices{{{0.0f, -0.5f}}, {{0.5f, 0.5f}}, {{-0.5f, 0.5f}}};
+
       mesh = std::make_unique<Graphics::Mesh>(vulkanDevice, vertices);
-    }
+    };
 
     // Pipeline Layout
     void Application::createPipelineLayout()

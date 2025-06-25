@@ -102,7 +102,6 @@ namespace GameEngine
     VkSwapchainKHR swapChains[] = {swapChain};
     presentInfo.swapchainCount = 1;
     presentInfo.pSwapchains = swapChains;
-
     presentInfo.pImageIndices = imageIndex;
 
     auto result = vkQueuePresentKHR(device.presentQueue(), &presentInfo);

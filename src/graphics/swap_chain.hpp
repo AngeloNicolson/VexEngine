@@ -77,6 +77,11 @@ namespace GameEngine
 
       VkSwapchainKHR swapChain;
 
+      /**
+       * @breif These handle the state of the images has been aquired and os redy for rendering. Onother one to signal
+       *that rendering has finnished adn presentation can happen
+       *
+       **/
       std::vector<VkSemaphore> imageAvailableSemaphores;
       std::vector<VkSemaphore> renderFinishedSemaphores;
       std::vector<VkFence> inFlightFences;

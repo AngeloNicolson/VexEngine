@@ -12,10 +12,6 @@
 
 namespace GameEngine
 {
-
-  /**
-   * @brief Namespace for graphics-related functionality.
-   */
   namespace Graphics
   {
     /**
@@ -26,9 +22,6 @@ namespace GameEngine
     class Mesh
     {
     public:
-      /**
-       * @brief Structure defining a vertex for the mesh.
-       */
       struct Vertex
       {
         glm::vec2 position; ///< 2D position of the vertex.
@@ -51,11 +44,8 @@ namespace GameEngine
        * @param device Reference to the VulkanDevice used for buffer creation.
        * @param vertices Vector of Vertex objects containing mesh data.
        */
-      Mesh(Graphics::VulkanDevice& device, const std::vector<Vertex>& vertices);
+      Mesh(VulkanDevice& device, const std::vector<Vertex>& vertices);
 
-      /**
-       * @brief Destructor to clean up Vulkan resources.
-       */
       ~Mesh();
 
       // Delete copy constructors because mesh manages Vulkan buffer and memory objects
@@ -81,10 +71,10 @@ namespace GameEngine
        */
       void createVertexBuffers(const std::vector<Vertex>& vertices);
 
-      Graphics::VulkanDevice& vulkanDevice; ///< Reference to the Vulkan device.
-      VkBuffer vertexBuffer;                ///< Vulkan buffer for vertex data.
-      VkDeviceMemory vertexBufferMemory;    ///< Vulkan memory for the vertex buffer.
-      uint32_t vertexCount;                 ///< Number of vertices in the mesh.
+      VulkanDevice& vulkanDevice;        ///< Reference to the Vulkan device.
+      VkBuffer vertexBuffer;             ///< Vulkan buffer for vertex data.
+      VkDeviceMemory vertexBufferMemory; ///< Vulkan memory for the vertex buffer.
+      uint32_t vertexCount;              ///< Number of vertices in the mesh.
     };
   } // namespace Graphics
 
