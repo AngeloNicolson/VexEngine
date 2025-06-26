@@ -25,7 +25,6 @@ namespace GameEngine
 
       // Copy constructors (Because the app is now managing vulkan objects we need to delete copy constructors)
       Application(const Platform::Window&) = delete;
-      Application& operator=(const Platform::Window&) = delete;
 
       void run();
 
@@ -34,12 +33,15 @@ namespace GameEngine
       void createPipelineLayout();
       void createPipeline();
       void createCommandBuffers();
+      void freeCommandBuffers();
       void drawFrame();
+      void recreateSwapChain();
+      void recordCommandBuffer(int imageIndex);
 
       Platform::Window vulkanWindow{WIDTH, HEIGHT, "GhostEngine Window"};
       Graphics::VulkanDevice vulkanDevice{vulkanWindow};
 
-      Graphics::SwapChain swapChain{vulkanDevice, vulkanWindow.getExtent()};
+      std::unique_ptr<Graphics::SwapChain> swapChain;
 
       // Reason for using smart pointer is so we dont have to call new and delete for every pipeline
       // (https://www.learncpp.com/cpp-tutorial/introduction-to-smart-pointers-move-semantics/)

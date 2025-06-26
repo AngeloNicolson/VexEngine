@@ -7,6 +7,7 @@
 
 // std lib headers
 #include <vector>
+#include <memory>
 
 namespace GameEngine
 {
@@ -19,6 +20,8 @@ namespace GameEngine
       static constexpr int MAX_FRAMES_IN_FLIGHT = 2;
 
       SwapChain(VulkanDevice& deviceRef, VkExtent2D windowExtent);
+      // Constructor to take in the previous swap chain
+      SwapChain(VulkanDevice& deviceRef, VkExtent2D windowExtent, std::shared_ptr<SwapChain> previous);
       ~SwapChain();
 
       SwapChain(const SwapChain&) = delete;
@@ -43,6 +46,7 @@ namespace GameEngine
       VkResult submitCommandBuffers(const VkCommandBuffer* buffers, uint32_t* imageIndex);
 
     private:
+      void init();
       void createSwapChain();
       void createImageViews();
       void createDepthResources();
@@ -76,6 +80,7 @@ namespace GameEngine
       VkExtent2D windowExtent;
 
       VkSwapchainKHR swapChain;
+      std::shared_ptr<SwapChain> oldSwapChain;
 
       /**
        * @breif These handle the state of the images has been aquired and os redy for rendering. Onother one to signal

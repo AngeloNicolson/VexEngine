@@ -53,6 +53,13 @@ namespace GameEngine
       VkExtent2D getExtent() { return {static_cast<uint32_t>(width), static_cast<uint32_t>(height)}; }
 
       /**
+       * @brief Checks if the window should resized.
+       * @return if the window was resize or not.
+       */
+      bool wasWindowResized() { return frameBufferResized; }
+      void resetWindowResizedFlag() { frameBufferResized = false; };
+
+      /**
        * @brief Creates a Vulkan drawable surface associated with the window.
        *
        * This function creates a `VkSurfaceKHR` object, which is an abstraction
@@ -80,11 +87,14 @@ namespace GameEngine
       GLFWwindow* getNativeHandle() const;
 
     private:
+      static void framebufferResizeCallback(GLFWwindow* window, int width, int height);
       void initWindow();
 
       GLFWwindow* window;
-      const int width;
-      const int height;
+      int width;
+      int height;
+      bool frameBufferResized = false;
+
       std::string windowName;
     };
   } // namespace Platform
