@@ -1,5 +1,11 @@
 #include "Application.hpp"
 
+// libs
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
+// std
 #include <stdexcept>
 #include <array>
 
@@ -7,6 +13,12 @@ namespace GameEngine
 {
   namespace Core
   {
+    struct SimplePushConstantData
+    {
+      glm::vec2 offset;
+      glm::vec3 color;
+    };
+
     Application::Application()
     {
       loadModels();
@@ -42,14 +54,19 @@ namespace GameEngine
     // Pipeline Layout
     void Application::createPipelineLayout()
     {
+      VkPushConstantRange pushConstantRange{};
+      pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+      pushConstantRange.offset = 0;
+      pushConstantRange.size = sizeof(SimplePushConstantData);
+
       VkPipelineLayoutCreateInfo pipelineLayoutInfo{}; // struct
 
       // Struct member variables
       pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
       pipelineLayoutInfo.setLayoutCount = 0;
       pipelineLayoutInfo.pSetLayouts = nullptr;
-      pipelineLayoutInfo.pushConstantRangeCount = 0;
-      pipelineLayoutInfo.pPushConstantRanges = nullptr;
+      pipelineLayoutInfo.pushConstantRangeCount = 1;
+      pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
 
       if(vkCreatePipelineLayout(vulkanDevice.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
         {
@@ -160,6 +177,20 @@ namespace GameEngine
 
       pipeline->bind(commandBuffers[imageIndex]);
       mesh->bind(commandBuffers[imageIndex]);
+
+      for(int j = 0; j < 4; j++)
+        {
+          SimplePushConstantData push{};
+          // Order must match the uniform push constant in the shader.vert
+          push.offset = {0.0f, -0.4f + j * 0.25f};
+          push.color = {0.0f, 0.0f, 0.2f + 0.2f * j};
+
+          vkCmdPushConstants(commandBuffers[imageIndex], pipelineLayout,
+                             VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
+                             sizeof(SimplePushConstantData), &push);
+          mesh->draw(commandBuffers[imageIndex]);
+        };
+
       mesh->draw(commandBuffers[imageIndex]);
 
       // Finish recording
