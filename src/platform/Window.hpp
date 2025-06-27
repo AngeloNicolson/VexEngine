@@ -1,4 +1,4 @@
-// Window declaration
+// VulkanWindow declaration
 #pragma once
 
 #define GLFW_INCLUDE_VULKAN
@@ -14,7 +14,7 @@ namespace GameEngine
      * @brief Represents a native application window.
      *        Handles creation and lifetime of a GLFW window for use with Vulkan.
      */
-    class Window
+    class VulkanWindow
     {
     public:
       /**
@@ -23,27 +23,27 @@ namespace GameEngine
        * @param h The height of the window in pixels.
        * @param name The title of the window.
        */
-      Window(int w, int h, std::string name);
+      VulkanWindow(int w, int h, std::string name);
 
-      ~Window();
+      ~VulkanWindow();
 
       /**
-       * @brief Deleted copy constructor to prevent copying of Window instances.
+       * @brief Deleted copy constructor to prevent copying of VulkanWindow instances.
        *
-       * Copying a Window object is disallowed to avoid issues with
+       * Copying a VulkanWindow object is disallowed to avoid issues with
        * resource management and ownership.
        */
-      Window(const Window&) = delete;
+      VulkanWindow(const VulkanWindow&) = delete;
 
       /**
-       * @brief Deleted copy assignment operator to prevent copying of Window instances.
+       * @brief Deleted copy assignment operator to prevent copying of VulkanWindow instances.
        *
-       * Assigning one Window object to another is disallowed to maintain
+       * Assigning one VulkanWindow object to another is disallowed to maintain
        * unique ownership of underlying resources.
        *
-       * @return Reference to the current Window object.
+       * @return Reference to the current VulkanWindow object.
        */
-      Window& operator=(const Window&) = delete;
+      VulkanWindow& operator=(const VulkanWindow&) = delete;
 
       /**
        * @brief Checks if the window should close.
@@ -56,8 +56,8 @@ namespace GameEngine
        * @brief Checks if the window should resized.
        * @return if the window was resize or not.
        */
-      bool wasWindowResized() { return frameBufferResized; }
-      void resetWindowResizedFlag() { frameBufferResized = false; };
+      bool wasVulkanWindowResized() { return frameBufferResized; }
+      void resetVulkanWindowResizedFlag() { frameBufferResized = false; };
 
       /**
        * @brief Creates a Vulkan drawable surface associated with the window.

@@ -1,4 +1,4 @@
-#include "VulkanDevice.hpp"
+#include "vulkan_device.hpp"
 
 // std headers
 #include <cstring>
@@ -37,7 +37,7 @@ namespace GameEngine
   }
 
   // class member functions
-  Graphics::VulkanDevice::VulkanDevice(Platform::Window& window) : window{window}
+  Graphics::VulkanDevice::VulkanDevice(Platform::VulkanWindow& window) : window{window}
   {
     createInstance();      // Create vulkan instance (Connection between engine and vulkan)
     setupDebugMessenger(); // Vulkan has little validation so enable validation layers (Disable for release builds)

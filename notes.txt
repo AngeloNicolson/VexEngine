@@ -138,3 +138,9 @@ manually.
   the begginning.
 - Look at how to implement the vulkan memory allocator
   https://pastebin.com/0bu2a2ZP
+
+# Push Constants
+
+- can push color and transformations to the device.
+- Super fast but limited in size.
+- Common way to handle transformations is by pushing a transformation matrix

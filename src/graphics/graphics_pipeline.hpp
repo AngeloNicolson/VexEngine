@@ -3,7 +3,7 @@
 
 // TODO: Make Doxygen comments in this file
 
-#include "VulkanDevice.hpp"
+#include "vulkan_device.hpp"
 
 // std
 #include <vector>

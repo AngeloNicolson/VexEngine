@@ -1,6 +1,6 @@
 
 #include <iostream>
-#include "./core/Application.hpp"
+#include "./core/application.hpp"
 
 // std
 #include <cstdlib>

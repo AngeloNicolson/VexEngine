@@ -36,7 +36,7 @@ namespace GameEngine
       const bool enableValidationLayers = true;
 #endif
 
-      VulkanDevice(Platform::Window& window);
+      VulkanDevice(Platform::VulkanWindow& window);
       ~VulkanDevice();
 
       // Not copyable or movable
@@ -135,7 +135,7 @@ namespace GameEngine
       VkInstance instance;
       VkDebugUtilsMessengerEXT debugMessenger;
       VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-      GameEngine::Platform::Window& window;
+      GameEngine::Platform::VulkanWindow& window;
       VkCommandPool commandPool;
 
       VkDevice device_;

@@ -54,6 +54,7 @@ namespace GameEngine
           vkDestroyImageView(device.device(), depthImageViews[i], nullptr);
           vkDestroyImage(device.device(), depthImages[i], nullptr);
           vkFreeMemory(device.device(), depthImageMemories[i], nullptr);
+          std::cout << "THIS IS THE PROBLEM AREA 2" << std::endl;
         }
 
       for(auto framebuffer : swapChainFramebuffers) { vkDestroyFramebuffer(device.device(), framebuffer, nullptr); }

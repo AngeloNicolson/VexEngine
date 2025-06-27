@@ -1,8 +1,8 @@
 #pragma once
 
 #include "../platform/Window.hpp"
-#include "../graphics/GraphicsPipeline.hpp"
-#include "../graphics/VulkanDevice.hpp"
+#include "../graphics/graphics_pipeline.hpp"
+#include "../graphics/vulkan_device.hpp"
 #include "../graphics/swap_chain.hpp"
 #include "../graphics/mesh.hpp"
 
@@ -24,7 +24,7 @@ namespace GameEngine
       ~Application();
 
       // Copy constructors (Because the app is now managing vulkan objects we need to delete copy constructors)
-      Application(const Platform::Window&) = delete;
+      Application(const Platform::VulkanWindow&) = delete;
 
       void run();
 
@@ -38,7 +38,7 @@ namespace GameEngine
       void recreateSwapChain();
       void recordCommandBuffer(int imageIndex);
 
-      Platform::Window vulkanWindow{WIDTH, HEIGHT, "GhostEngine Window"};
+      Platform::VulkanWindow vulkanWindow{WIDTH, HEIGHT, "GhostEngine Window"};
       Graphics::VulkanDevice vulkanDevice{vulkanWindow};
 
       std::unique_ptr<Graphics::SwapChain> swapChain;

@@ -1,4 +1,4 @@
-#include "GraphicsPipeline.hpp"
+#include "graphics_pipeline.hpp"
 
 #include "mesh.hpp"
 
