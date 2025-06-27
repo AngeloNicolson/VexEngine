@@ -13,9 +13,11 @@ namespace GameEngine
 {
   namespace Core
   {
+    // This needs to align with Vulkan specification which requires 16 byte padding
     struct SimplePushConstantData
     {
       glm::vec2 offset;
+      float padding[2]; // Offset the color to compensate for vec2
       glm::vec3 color;
     };
 
@@ -181,17 +183,16 @@ namespace GameEngine
       for(int j = 0; j < 4; j++)
         {
           SimplePushConstantData push{};
+          // TODO: really play with the allignment to see how i can solve this without using c++20 features
           // Order must match the uniform push constant in the shader.vert
-          push.offset = {0.0f, -0.4f + j * 0.25f};
           push.color = {0.0f, 0.0f, 0.2f + 0.2f * j};
+          push.offset = {0.0f, -0.4f + j * 0.25f};
 
           vkCmdPushConstants(commandBuffers[imageIndex], pipelineLayout,
                              VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
                              sizeof(SimplePushConstantData), &push);
           mesh->draw(commandBuffers[imageIndex]);
         };
-
-      mesh->draw(commandBuffers[imageIndex]);
 
       // Finish recording
       vkCmdEndRenderPass(commandBuffers[imageIndex]);
