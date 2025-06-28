@@ -113,7 +113,9 @@ ______________________________________________________________________
 
 - [x] Initial README
 - [x] Refactor project structure
-- [ ] Fragment Interpolation
+- [x] Fragment Interpolation
+- [x] 2D Transformations
+- [ ] Extract core rendering into its own component
 - [ ] Add billboard rendering
 - [ ] Support multiple dynamic lights
 - [ ] Add specular lighting support
