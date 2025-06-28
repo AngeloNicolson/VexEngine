@@ -29,7 +29,13 @@ namespace GameEngine
       VkCommandBuffer getCurrentCommandBuffer() const
       {
         assert(isFrameStarted && "Cannot get command buffer when frame not in progress");
-        return commandBuffers[currentImageIndex];
+        return commandBuffers[currentFrameIndex];
+      }
+
+      int getFrameIndex() const
+      {
+        assert(isFrameStarted && " Cannot get frame index when frame is not in progress");
+        return currentImageIndex;
       }
 
       VkCommandBuffer beginFrame();
@@ -49,6 +55,7 @@ namespace GameEngine
       std::vector<VkCommandBuffer> commandBuffers;
 
       uint32_t currentImageIndex;
+      int currentFrameIndex = 0; // Keep track of frames from 0 to MAX_FRAMES_IN_FLIGHT
       bool isFrameStarted = false;
     };
 

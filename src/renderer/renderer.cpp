@@ -27,25 +27,26 @@ namespace GameEngine
           extent = vulkanWindow.getExtent();
           glfwWaitEvents();
         }
-
       vkDeviceWaitIdle(vulkanDevice.device());
 
       if(swapChain == nullptr) { swapChain = std::make_unique<Graphics::SwapChain>(vulkanDevice, extent); }
       else
         {
-          swapChain = std::make_unique<Graphics::SwapChain>(vulkanDevice, extent, std::move(swapChain));
-          // Free command buffers and create new ones
-          if(swapChain->imageCount() != commandBuffers.size())
+          std::shared_ptr<Graphics::SwapChain> oldSwapChain = std::move(swapChain);
+          swapChain = std::make_unique<Graphics::SwapChain>(vulkanDevice, extent, oldSwapChain);
+          if(!oldSwapChain->compareSwapFormats(*swapChain.get()))
             {
-              freeCommandBuffers();
-              createCommandBuffers();
+              throw std::runtime_error("Swap chain image(or depth) format has changed!");
+              /* Apparently it might be better to setup a callback function notifying the app that a new incompatable
+               * renderpass has been created
+               */
             }
         }
     }
 
     void Renderer::createCommandBuffers()
     {
-      commandBuffers.resize(swapChain->imageCount());
+      commandBuffers.resize(Graphics::SwapChain::MAX_FRAMES_IN_FLIGHT);
 
       VkCommandBufferAllocateInfo allocInfo{};
       allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
@@ -117,7 +118,9 @@ namespace GameEngine
       else if(result != VK_SUCCESS) { throw std::runtime_error("failed to present swap chain image!"); }
 
       isFrameStarted = false;
+      currentFrameIndex = (currentImageIndex + 1) % Graphics::SwapChain::MAX_FRAMES_IN_FLIGHT;
     };
+
     void Renderer::beginSwapChainRenderPass(VkCommandBuffer commandBuffer)
     {
       assert(isFrameStarted && "Can't call beginSwapChainRenderPass if frame is not in progress");
