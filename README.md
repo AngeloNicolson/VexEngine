@@ -115,7 +115,8 @@ ______________________________________________________________________
 - [x] Refactor project structure
 - [x] Fragment Interpolation
 - [x] 2D Transformations
-- [ ] Extract core rendering into its own component
+- [x] Extract core rendering into its own component
+- [ ] Add Homogeneous coordinate system
 - [ ] Add billboard rendering
 - [ ] Support multiple dynamic lights
 - [ ] Add specular lighting support
