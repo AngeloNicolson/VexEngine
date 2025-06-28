@@ -4,6 +4,7 @@
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
+#include <glm/gtc/constants.hpp>
 
 // std
 #include <stdexcept>
@@ -24,7 +25,7 @@ namespace GameEngine
 
     Application::Application()
     {
-      loadModels();
+      loadGameObjects();
       createPipelineLayout();
       recreateSwapChain();
       createCommandBuffers();
@@ -46,12 +47,22 @@ namespace GameEngine
       vkDeviceWaitIdle(vulkanDevice.device());
     }
 
-    void Application::loadModels()
+    void Application::loadGameObjects()
     {
       std::vector<Graphics::Mesh::Vertex> vertices{
         {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}}, {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}, {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
 
-      mesh = std::make_unique<Graphics::Mesh>(vulkanDevice, vertices);
+      // Used shared allows us to use one model instace between many game objects
+      auto mesh = std::make_shared<Graphics::Mesh>(vulkanDevice, vertices);
+
+      auto triangle = GameObject::createGameObject();
+      triangle.model = mesh;
+      triangle.color = {0.1f, 0.8f, 0.1f};
+      triangle.transform2d.translation.x = 0.2f;
+      triangle.transform2d.scale = {0.2f, 0.2f}; // Scale the objects 2x2 matrix x and y components
+      triangle.transform2d.rotation = 0.25f * glm::two_pi<float>();
+
+      gameObjects.push_back(std::move(triangle));
     };
 
     // Pipeline Layout
@@ -142,9 +153,6 @@ namespace GameEngine
 
     void Application::recordCommandBuffer(int imageIndex)
     {
-      static int frame = 0;
-      frame = (frame + 1) % 10000;
-
       VkCommandBufferBeginInfo beginInfo{};
       beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -181,22 +189,7 @@ namespace GameEngine
       vkCmdSetViewport(commandBuffers[imageIndex], 0, 1, &viewport);
       vkCmdSetScissor(commandBuffers[imageIndex], 0, 1, &scissor);
 
-      pipeline->bind(commandBuffers[imageIndex]);
-      mesh->bind(commandBuffers[imageIndex]);
-
-      for(int j = 0; j < 4; j++)
-        {
-          SimplePushConstantData push{};
-          // TODO: really play with the allignment to see how i can solve this without using c++20 features
-          // Order must match the uniform push constant in the shader.vert
-          push.offset = {-0.5f + frame * 0.0002f, -0.4f + j * 0.25f};
-          push.color = {0.0f, 0.0f, 0.2f + 0.2f * j};
-
-          vkCmdPushConstants(commandBuffers[imageIndex], pipelineLayout,
-                             VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0,
-                             sizeof(SimplePushConstantData), &push);
-          mesh->draw(commandBuffers[imageIndex]);
-        };
+      renderGameObjects(commandBuffers[imageIndex]); // Render Game Objects
 
       // Finish recording
       vkCmdEndRenderPass(commandBuffers[imageIndex]);
@@ -205,6 +198,27 @@ namespace GameEngine
           throw std::runtime_error("Failes to record command buffer");
         }
     }
+
+    void Application::renderGameObjects(VkCommandBuffer commandBuffer)
+    {
+      pipeline->bind(commandBuffer);
+
+      // Loop over game objects
+      for(auto& obj : gameObjects)
+        {
+          SimplePushConstantData push{};
+          // Order must match the uniform push constant in the shader.vert
+          push.offset = obj.transform2d.translation;
+          push.color = obj.color;
+          push.transform = obj.transform2d.mat2();
+
+          vkCmdPushConstants(commandBuffer, pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT,
+                             0, sizeof(SimplePushConstantData), &push);
+
+          obj.model->bind(commandBuffer);
+          obj.model->draw(commandBuffer);
+        }
+    };
 
     void Application::drawFrame()
     {

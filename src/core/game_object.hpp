@@ -10,11 +10,23 @@ namespace GameEngine
   namespace Core
   {
 
+    // Transformation for 2D objects
     struct Transform2dComponent
     {
-      glm::vec2 transition{}; // Position offset
+      glm::vec2 translation{}; // Position offset
+      glm::vec2 scale{1.0f, 1.0f};
+      float rotation;
 
-      glm::mat2 mat2() { return glm::mat2{1.0f}; }
+      glm::mat2 mat2()
+      {
+        const float sin = glm::sin(rotation);
+        const float cos = glm::sin(rotation);
+        // Rotation Matrix
+        glm::mat2 rotMatrix{{cos, sin}, {-sin, cos}};
+
+        glm::mat2 scaleMat{{scale.x, 0.0f}, {0.0f, scale.y}};
+        return rotMatrix * scaleMat;
+      }
     };
 
     class GameObject
@@ -32,10 +44,10 @@ namespace GameEngine
         return GameObject{currentId++};
       }
 
-      GameObject& operator=(GameObject&&) = default;
       GameObject(const GameObject&) = delete;
       GameObject& operator=(const GameObject&) = delete;
-      GameObject(GameObject&&) = delete;
+      GameObject(GameObject&&) = default;
+      GameObject& operator=(GameObject&&) = default;
 
       const id_t getId() { return id; }
 

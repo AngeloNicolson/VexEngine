@@ -4,7 +4,7 @@
 #include "../graphics/graphics_pipeline.hpp"
 #include "../graphics/vulkan_device.hpp"
 #include "../graphics/swap_chain.hpp"
-#include "../graphics/mesh.hpp"
+#include "game_object.hpp"
 
 // std
 #include <memory>
@@ -29,7 +29,7 @@ namespace GameEngine
       void run();
 
     private:
-      void loadModels();
+      void loadGameObjects();
       void createPipelineLayout();
       void createPipeline();
       void createCommandBuffers();
@@ -37,6 +37,7 @@ namespace GameEngine
       void drawFrame();
       void recreateSwapChain();
       void recordCommandBuffer(int imageIndex);
+      void renderGameObjects(VkCommandBuffer commandBuffer);
 
       Platform::VulkanWindow vulkanWindow{WIDTH, HEIGHT, "GhostEngine Window"};
       Graphics::VulkanDevice vulkanDevice{vulkanWindow};
@@ -49,7 +50,7 @@ namespace GameEngine
 
       VkPipelineLayout pipelineLayout;
       std::vector<VkCommandBuffer> commandBuffers;
-      std::unique_ptr<Graphics::Mesh> mesh;
+      std::vector<GameObject> gameObjects;
     };
 
   } // namespace Core
