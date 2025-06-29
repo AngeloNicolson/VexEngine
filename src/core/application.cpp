@@ -40,22 +40,75 @@ namespace GameEngine
         }
     }
 
-    void Application::loadGameObjects()
+    // temporary helper function, creates a 1x1x1 cube centered at offset
+    std::unique_ptr<Graphics::Mesh> createCubeModel(Graphics::VulkanDevice& device, glm::vec3 offset)
     {
       std::vector<Graphics::Mesh::Vertex> vertices{
-        {{0.0f, -0.5f}, {1.0f, 0.0f, 0.0f}}, {{0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}}, {{-0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}}};
 
-      // Used shared allows us to use one model instace between many game objects
-      auto mesh = std::make_shared<Graphics::Mesh>(vulkanDevice, vertices);
+        // left face (white)
+        {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+        {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
+        {{-.5f, -.5f, .5f}, {.9f, .9f, .9f}},
+        {{-.5f, -.5f, -.5f}, {.9f, .9f, .9f}},
+        {{-.5f, .5f, -.5f}, {.9f, .9f, .9f}},
+        {{-.5f, .5f, .5f}, {.9f, .9f, .9f}},
 
-      auto triangle = GameObject::createGameObject();
-      triangle.model = mesh;
-      triangle.color = {0.1f, 0.8f, 0.1f};
-      triangle.transform2d.translation.x = 0.2f;
-      triangle.transform2d.scale = {0.2f, 0.2f}; // Scale the objects 2x2 matrix x and y components
-      triangle.transform2d.rotation = 0.25f * glm::two_pi<float>();
+        // right face (yellow)
+        {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+        {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
+        {{.5f, -.5f, .5f}, {.8f, .8f, .1f}},
+        {{.5f, -.5f, -.5f}, {.8f, .8f, .1f}},
+        {{.5f, .5f, -.5f}, {.8f, .8f, .1f}},
+        {{.5f, .5f, .5f}, {.8f, .8f, .1f}},
 
-      gameObjects.push_back(std::move(triangle));
+        // top face (orange, remember y axis points down)
+        {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+        {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+        {{-.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+        {{-.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+        {{.5f, -.5f, -.5f}, {.9f, .6f, .1f}},
+        {{.5f, -.5f, .5f}, {.9f, .6f, .1f}},
+
+        // bottom face (red)
+        {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+        {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+        {{-.5f, .5f, .5f}, {.8f, .1f, .1f}},
+        {{-.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+        {{.5f, .5f, -.5f}, {.8f, .1f, .1f}},
+        {{.5f, .5f, .5f}, {.8f, .1f, .1f}},
+
+        // nose face (blue)
+        {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+        {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+        {{-.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+        {{-.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+        {{.5f, -.5f, 0.5f}, {.1f, .1f, .8f}},
+        {{.5f, .5f, 0.5f}, {.1f, .1f, .8f}},
+
+        // tail face (green)
+        {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+        {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+        {{-.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+        {{-.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+        {{.5f, -.5f, -0.5f}, {.1f, .8f, .1f}},
+        {{.5f, .5f, -0.5f}, {.1f, .8f, .1f}},
+
+      };
+      for(auto& v : vertices) { v.position += offset; }
+      return std::make_unique<Graphics::Mesh>(device, vertices);
+    }
+
+    void Application::loadGameObjects()
+    {
+      std::shared_ptr<Graphics::Mesh> model = createCubeModel(vulkanDevice, {0.0f, 0.0f, 0.0f});
+
+      auto cube = GameObject::createGameObject();
+      cube.model = model;
+      cube.transform.translation = {0.0f, 0.0f, 0.5f};
+      cube.transform.scale = {0.5f, 0.5f, 0.5f};
+
+      // Add cube to list of objects
+      gameObjects.push_back(std::move(cube));
     };
 
     // Pysics and colliston systems here

@@ -24,7 +24,7 @@ namespace GameEngine
     public:
       struct Vertex
       {
-        glm::vec2 position; ///< 2D position of the vertex.
+        glm::vec3 position; ///< 3D position of the vertex.
         glm::vec3 color;
 
         /**

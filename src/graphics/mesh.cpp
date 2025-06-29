@@ -60,7 +60,7 @@ namespace GameEngine
       // Interleaving position and color together
       attributeDescriptions[0].binding = 0;
       attributeDescriptions[0].location = 0;
-      attributeDescriptions[0].format = VK_FORMAT_R32G32_SFLOAT;
+      attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
       attributeDescriptions[0].offset = offsetof(Vertex, position); // Calculate offset of position mem in Vertex struct
 
       attributeDescriptions[1].binding = 0;

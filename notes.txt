@@ -144,3 +144,26 @@ manually.
 - can push color and transformations to the device.
 - Super fast but limited in size.
 - Common way to handle transformations is by pushing a transformation matrix
+
+# Euler angles and homogeneous coordinates
+
+## Rotation Types
+
+### Intrinsic
+
+- Read rotation transformations from left to right -> R = (Y, X, Z)
+
+### Extrinsic
+
+- Read rotation transformations from Right to Left -> R = (Z, X, Y)
+
+## homogeneous Coordinates
+
+- The last component indicates the position versus direction, 1 for position
+  and 0 for direction
+
+## Note
+
+- We are using the tait-brian extrinsic ordering convention.
+- We can easily change from extrinsic to intrinsic by reading in the rotation
+  in the reverse order. I should add this as a switchable method for objects
